@@ -4,6 +4,7 @@ import { LogoutBtn } from "./LogoutBtn";
 import { TextDarkModeButton } from "./TextDarkModeBtn";
 import { HomeIcon, ArchiveBoxIcon } from "@heroicons/react/24/solid";
 import { Tooltip } from "tamnora-react";
+import { TruckIcon } from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
   const auth = useAuth();
@@ -32,7 +33,7 @@ const Sidebar = () => {
         <div className="2xl:pb-4 2xl:px-4 mt-2">
           <NavLink to={'/'}>
             <div className="flex items-center gap-2">
-              <img src="/vite.svg" className="h-8 rounded-lg object-cover mx-auto 2xl:mx-0" alt="vite logo" />
+              <TruckIcon className="size-6" />
               <span className="hidden 2xl:block text-zinc-700 dark:text-zinc-200 font-medium text-xl">Checklist</span>
             </div>
           </NavLink>

@@ -56,8 +56,8 @@ const App = () => {
     <>
       <BrowserRouter>
         <AuthProvider>
-          <Sidebar />
-          <BottomNav />
+          {/* <Sidebar /> */}
+          {/* <BottomNav /> */}
           <Layout>
             <AppRoutes />
           </Layout>
