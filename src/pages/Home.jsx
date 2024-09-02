@@ -1,6 +1,6 @@
 import { ArrowRightStartOnRectangleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Card } from "../components/Card";
-import { Button, Modal, Tooltip } from "tamnora-react";
+import { Button, Input, Modal, Select, Textarea, Tooltip } from "tamnora-react";
 import { useState, useEffect } from "react";
 import { DarkModeBtn } from "../components/DarkModeBtn";
 
@@ -9,10 +9,32 @@ export function Home() {
   const [historial, setHistorial] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function closeModal() {
-    setIsModalOpen(false)
-  }
+  const [step, setStep] = useState(1);
+  const [subtitle, setSubtitle] = useState('');
+  const [responses, setResponses] = useState({});
 
+  // Función para manejar los cambios en el formulario
+  const handleChange = (e) => {
+    setResponses({
+      ...responses,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  // Función para avanzar al siguiente paso
+  const nextStep = () => {
+    step < 4 ? setStep(prevStep => prevStep + 1) : null;
+  };
+
+  // Función para retroceder al paso anterior
+  const prevStep = () => {
+    step > 1 ? setStep(prevStep => prevStep - 1) : null;
+  };
+
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
 
   useEffect(() => {
     setVehiculos([
@@ -50,6 +72,65 @@ export function Home() {
     ]);
   }, []);
 
+
+  function renderForm() {
+    if (step == 1) {
+      return (
+        <form action="">
+          <div className="grid grid-cols-2 gap-3">
+            <Input isReadOnly label="Patente" defaultValue="OBJ680" variant="faded" />
+            <Input isReadOnly label="Fecha" defaultValue="04/08/2024" variant="faded" />
+          </div>
+          <div className="grid grid-cols-1 gap-3 mt-3">
+            <Input label="Kilometraje" placeholder="Ingresar km del vehiculo" variant="faded" />
+          </div>
+        </form>
+      )
+    }
+    if (step == 2) {
+      // [Buen estado / Desgaste leve / Desgaste severo / Neumático pinchado]
+      let options = [
+        { value: 0, label: 'Neumático pinchado' }, 
+        { value: 1, label: 'Desgaste severo' }, 
+        { value: 2, label: 'Desgaste leve' }, 
+        { value: 3, label: 'Buen estado' }
+      ]
+      return (
+        <form action="">
+          <div className="grid grid-cols-2 gap-3">
+            <Select defaultValue={3} variant="faded" label="Delantera izquierda" options={options} />
+            <Select defaultValue={3} variant="faded" label="Delantera derecha" options={options} />
+            <Select defaultValue={3} variant="faded" label="Trasera izquierda" options={options} />
+            <Select defaultValue={3} variant="faded" label="Trasera derecha" options={options} />
+          </div>
+          <div className="grid gap-3 mt-3">
+            <Select defaultValue={3} variant="faded" label="Rueda de auxilio" options={options} />
+            <Textarea variant="faded" label="Observaciones" placeholder="Ingresar detalles extra de las cubiertas en caso de ser necesario." />
+          </div>
+        </form>
+      )
+    }
+    if (step == 3) {
+      return (
+        <form action="">
+        </form>
+      )
+    }
+    if (step == 4) {
+      return (
+        <form action="">
+        </form>
+      )
+    }
+  }
+
+  useEffect(() => {
+    if (step === 1) {
+      setSubtitle('Información general');
+    } else if (step === 2) {
+      setSubtitle('Estado de Cubiertas');
+    }
+  }, [step]);
 
   return (
     <>
@@ -135,8 +216,21 @@ export function Home() {
         }
       </section>
 
-      <Modal isOpen={isModalOpen} handleModal={closeModal} size="2xl">
-
+      <Modal
+        title="Checklist semanal"
+        subtitle={`${subtitle} - Paso ${step}/4`}
+        isDismissable={true}
+        isOpen={isModalOpen}
+        handleModal={closeModal} size="3xl">
+        {renderForm()}
+        <footer className="mt-6 space-x-3 flex justify-end">
+          <Button onClick={prevStep} variant="ghost">
+            Anterior
+          </Button>
+          <Button onClick={nextStep}>
+            Siguiente
+          </Button>
+        </footer>
       </Modal>
     </>
   )
