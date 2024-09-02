@@ -21,18 +21,8 @@ export function Home() {
     });
   };
 
-  // Función para avanzar al siguiente paso
-  const nextStep = () => {
-    step < 4 ? setStep(prevStep => prevStep + 1) : null;
-  };
-
-  // Función para retroceder al paso anterior
-  const prevStep = () => {
-    step > 1 ? setStep(prevStep => prevStep - 1) : null;
-  };
-
-
   function closeModal() {
+    setStep(1)
     setIsModalOpen(false);
   }
 
@@ -49,26 +39,26 @@ export function Home() {
     ]);
 
     setHistorial([
-      // {
-      //   id: 1,
-      //   empleado: 'Juan Martinez',
-      //   marca: 'Toyota',
-      //   modelo: 'Hilux',
-      //   patente: 'ABC123',
-      //   realizado: false,
-      //   ultimoKm: '479807',
-      //   ultimoChecklist: '2023-08-07'
-      // },
-      // {
-      //   id: 2,
-      //   empleado: 'Gonzalo Valenzuela',
-      //   marca: 'Ford',
-      //   modelo: 'Ranger',
-      //   patente: 'XYZ789',
-      //   realizado: true,
-      //   ultimoKm: '479807',
-      //   ultimoChecklist: '2023-08-14'
-      // }
+      {
+        id: 1,
+        empleado: 'Juan Martinez',
+        marca: 'Toyota',
+        modelo: 'Hilux',
+        patente: 'ABC123',
+        realizado: false,
+        ultimoKm: '479807',
+        ultimoChecklist: '2023-08-07'
+      },
+      {
+        id: 2,
+        empleado: 'Gonzalo Valenzuela',
+        marca: 'Ford',
+        modelo: 'Ranger',
+        patente: 'XYZ789',
+        realizado: true,
+        ultimoKm: '479807',
+        ultimoChecklist: '2023-08-14'
+      }
     ]);
   }, []);
 
@@ -77,7 +67,7 @@ export function Home() {
     if (step == 1) {
       return (
         <form action="">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-2 gap-3">
             <Input isReadOnly label="Patente" defaultValue="OBJ680" variant="faded" />
             <Input isReadOnly label="Fecha" defaultValue="04/08/2024" variant="faded" />
           </div>
@@ -87,17 +77,18 @@ export function Home() {
         </form>
       )
     }
+
     if (step == 2) {
       // [Buen estado / Desgaste leve / Desgaste severo / Neumático pinchado]
       let options = [
-        { value: 0, label: 'Neumático pinchado' }, 
-        { value: 1, label: 'Desgaste severo' }, 
-        { value: 2, label: 'Desgaste leve' }, 
+        { value: 0, label: 'Neumático pinchado' },
+        { value: 1, label: 'Desgaste severo' },
+        { value: 2, label: 'Desgaste leve' },
         { value: 3, label: 'Buen estado' }
       ]
       return (
         <form action="">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-2 gap-3">
             <Select defaultValue={3} variant="faded" label="Delantera izquierda" options={options} />
             <Select defaultValue={3} variant="faded" label="Delantera derecha" options={options} />
             <Select defaultValue={3} variant="faded" label="Trasera izquierda" options={options} />
@@ -110,27 +101,176 @@ export function Home() {
         </form>
       )
     }
+
     if (step == 3) {
+      let options = [
+        { value: 0, label: 'Observaciones' },
+        { value: 1, label: 'Fuga' },
+        { value: 2, label: 'Bajo' },
+        { value: 3, label: 'Normal' }
+      ];
+
       return (
         <form action="">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Select defaultValue={3} variant="faded" label="Nivel de Aceite" options={options} />
+            <Select defaultValue={3} variant="faded" label="Nivel de Agua" options={options} />
+            <Select defaultValue={3} variant="faded" label="Nivel de Líquido de Frenos" options={options} />
+          </div>
+          <div className="grid gap-3 mt-3">
+            <Textarea variant="faded" label="Otros Fluidos" placeholder="Ingresar detalles sobre otros fluidos en caso de ser necesario." />
+          </div>
         </form>
       )
     }
+
     if (step == 4) {
+      let optionsParabrisas = [
+        { value: 0, label: 'Otros daños' },
+        { value: 1, label: 'Rajado' },
+        { value: 2, label: 'Astillado' },
+        { value: 3, label: 'Sano' }
+      ];
+
+      let optionsEspejosVentanas = [
+        { value: 0, label: 'Otros daños' },
+        { value: 1, label: 'Rotura severa' },
+        { value: 2, label: 'Rotura leve' },
+        { value: 3, label: 'Sanos' }
+      ];
+
       return (
         <form action="">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Select defaultValue={3} variant="faded" label="Parabrisas" options={optionsParabrisas} />
+            <Select defaultValue={3} variant="faded" label="Espejos Laterales" options={optionsEspejosVentanas} />
+          </div>
+          <div className="grid gap-3 mt-3">
+            <Select defaultValue={3} variant="faded" label="Ventanas" options={optionsEspejosVentanas} />
+          </div>
+        </form>
+      )
+    }
+
+    if (step == 5) {
+      let optionsPrecinto = [
+        { value: 0, label: 'Ausente' },
+        { value: 1, label: 'Roto' },
+        { value: 2, label: 'Intacto' }
+      ];
+
+      let optionsCarga = [
+        { value: 0, label: 'Vacía' },
+        { value: 1, label: 'Incompleta' },
+        { value: 2, label: 'Completa' }
+      ];
+
+      let optionsFechaVencimiento = [
+        { value: 0, label: 'Vencida' },
+        { value: 1, label: 'Vigente' }
+      ];
+
+      return (
+        <form action="">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Select defaultValue={2} variant="faded" label="Precinto" options={optionsPrecinto} />
+            <Select defaultValue={2} variant="faded" label="Carga" options={optionsCarga} />
+            <Select defaultValue={1} variant="faded" label="Fecha de Vencimiento" options={optionsFechaVencimiento} />
+          </div>
+        </form>
+      )
+    }
+
+    if (step == 6) {
+      let optionsDocumentos = [
+        { value: 0, label: 'No aplicable' },
+        { value: 1, label: 'Vencida' },
+        { value: 2, label: 'Vigente' }
+      ];
+
+      return (
+        <form action="">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Select defaultValue={2} variant="faded" label="VTV" options={optionsDocumentos} />
+            <Select defaultValue={2} variant="faded" label="Póliza de Seguro" options={optionsDocumentos} />
+            <Select defaultValue={2} variant="faded" label="Tarjeta Verde" options={optionsDocumentos} />
+          </div>
+        </form>
+      )
+    }
+
+    if (step == 7) {
+      let optionsAmortiguadoresFrenos = [
+        { value: 0, label: 'Requiere cambio' },
+        { value: 1, label: 'Desgaste severo' },
+        { value: 2, label: 'Desgaste leve' },
+        { value: 3, label: 'Buen estado' }
+      ];
+
+      let optionsDireccion = [
+        { value: 0, label: 'Otros problemas' },
+        { value: 1, label: 'Juego en dirección' },
+        { value: 2, label: 'Funciona correctamente' }
+      ];
+
+      return (
+        <form action="">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Select defaultValue={3} variant="faded" label="Amortiguadores" options={optionsAmortiguadoresFrenos} />
+            <Select defaultValue={3} variant="faded" label="Frenos" options={optionsAmortiguadoresFrenos} />
+          </div>
+          <div className="grid gap-3 mt-3">
+            <Select defaultValue={2} variant="faded" label="Dirección" options={optionsDireccion} />
+          </div>
+        </form>
+      )
+    }
+
+    if (step == 8) {
+      let optionsEstadoGeneral = [
+        { value: 0, label: 'Muy sucio' },
+        { value: 1, label: 'Sucio' },
+        { value: 2, label: 'Limpio' }
+      ];
+
+      let optionsTableroTapizados = [
+        { value: 0, label: 'Daños' },
+        { value: 1, label: 'Desgaste' },
+        { value: 2, label: 'Sucios' },
+        { value: 3, label: 'Limpios' }
+      ];
+
+      return (
+        <form action="">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Select defaultValue={2} variant="faded" label="Estado General" options={optionsEstadoGeneral} />
+            <Select defaultValue={3} variant="faded" label="Tablero de Instrumentos" options={optionsTableroTapizados} />
+          </div>
+          <div className="grid gap-3 mt-3">
+            <Select defaultValue={3} variant="faded" label="Tapizados" options={optionsTableroTapizados} />
+          </div>
         </form>
       )
     }
   }
 
   useEffect(() => {
-    if (step === 1) {
-      setSubtitle('Información general');
-    } else if (step === 2) {
-      setSubtitle('Estado de Cubiertas');
-    }
+    const subtitles = {
+      1: 'Información general',
+      2: 'Estado de Cubiertas',
+      3: 'Verificación de Fluidos',
+      4: 'Vidrios y Parabrisas',
+      5: 'Extintor',
+      6: 'Documentos Legales',
+      7: 'Frenos. Dirección',
+      8: 'Limpieza del Habitáculo',
+    };
+
+    setSubtitle(subtitles[step] || '');
   }, [step]);
+
+  const nextStep = () => setStep(prevStep => Math.min(prevStep + 1, 8));
+  const prevStep = () => setStep(prevStep => Math.max(prevStep - 1, 1));
 
   return (
     <>
@@ -218,12 +358,11 @@ export function Home() {
 
       <Modal
         title="Checklist semanal"
-        subtitle={`${subtitle} - Paso ${step}/4`}
-        isDismissable={true}
+        subtitle={`${subtitle} - Paso ${step}/8`}
         isOpen={isModalOpen}
         handleModal={closeModal} size="3xl">
         {renderForm()}
-        <footer className="mt-6 space-x-3 flex justify-end">
+        <footer className="mt-6 gap-2 flex flex-col sm:flex-row justify-end">
           <Button onClick={prevStep} variant="ghost">
             Anterior
           </Button>
