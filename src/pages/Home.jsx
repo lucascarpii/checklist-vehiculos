@@ -1,4 +1,4 @@
-import { ArrowRightStartOnRectangleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { ArrowRightStartOnRectangleIcon, CheckIcon, ClipboardDocumentCheckIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Card } from "../components/Card";
 import { Button, Input, Modal, Select, Textarea, Tooltip } from "tamnora-react";
 import { useState, useEffect } from "react";
@@ -11,20 +11,64 @@ export function Home() {
 
   const [step, setStep] = useState(1);
   const [subtitle, setSubtitle] = useState('');
-  const [responses, setResponses] = useState({});
-
-  // Función para manejar los cambios en el formulario
-  const handleChange = (e) => {
-    setResponses({
-      ...responses,
-      [e.target.name]: e.target.value
-    });
-  };
 
   function closeModal() {
     setStep(1)
     setIsModalOpen(false);
   }
+
+  const [formData, setFormData] = useState({
+    kilometraje: '',
+    estadoCubiertas: {
+      delanteraIzquierda: 3,
+      delanteraDerecha: 3,
+      traseraIzquierda: 3,
+      traseraDerecha: 3,
+      ruedaAuxilio: 3,
+    },
+    niveles: {
+      aceite: 3,
+      agua: 3,
+      frenos: 3,
+      otrosFluidos: '',
+    },
+    vidrios: {
+      parabrisas: 3,
+      espejosLaterales: 3,
+      ventanas: 3,
+    },
+    extintor: {
+      precinto: 2,
+      carga: 2,
+      fechaVencimiento: 1,
+    },
+    documentos: {
+      vtv: 2,
+      poliza: 2,
+      tarjetaVerde: 2,
+    },
+    frenosDireccion: {
+      amortiguadores: 3,
+      frenos: 3,
+      direccion: 2,
+    },
+    limpieza: {
+      estadoGeneral: 2,
+      tablero: 3,
+      tapizados: 3,
+    },
+  });
+
+  // Función para actualizar datos
+  const handleChange = (section, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value
+      }
+    }));
+  };
 
   useEffect(() => {
     setVehiculos([
@@ -72,7 +116,7 @@ export function Home() {
             <Input isReadOnly label="Fecha" defaultValue="04/08/2024" variant="faded" />
           </div>
           <div className="grid grid-cols-1 gap-3 mt-3">
-            <Input label="Kilometraje" placeholder="Ingresar km del vehiculo" variant="faded" />
+            <Input defaultValue={formData.kilometraje} isRequired label="Kilometraje" placeholder="Ingresar km del vehiculo" variant="faded" />
           </div>
         </form>
       )
@@ -112,7 +156,7 @@ export function Home() {
 
       return (
         <form action="">
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-3 gap-3">
             <Select defaultValue={3} variant="faded" label="Nivel de Aceite" options={options} />
             <Select defaultValue={3} variant="faded" label="Nivel de Agua" options={options} />
             <Select defaultValue={3} variant="faded" label="Nivel de Líquido de Frenos" options={options} />
@@ -147,6 +191,7 @@ export function Home() {
           </div>
           <div className="grid gap-3 mt-3">
             <Select defaultValue={3} variant="faded" label="Ventanas" options={optionsEspejosVentanas} />
+            <Textarea variant="faded" label="Observacion" placeholder="Ingresar detalles sobre otros daños en caso de ser necesario." />
           </div>
         </form>
       )
@@ -171,12 +216,10 @@ export function Home() {
       ];
 
       return (
-        <form action="">
-          <div className="grid sm:grid-cols-3 gap-3">
-            <Select defaultValue={2} variant="faded" label="Precinto" options={optionsPrecinto} />
-            <Select defaultValue={2} variant="faded" label="Carga" options={optionsCarga} />
-            <Select defaultValue={1} variant="faded" label="Fecha de Vencimiento" options={optionsFechaVencimiento} />
-          </div>
+        <form className="grid sm:grid-cols-3 gap-3" action="">
+          <Select defaultValue={2} variant="faded" label="Carga" options={optionsCarga} />
+          <Select defaultValue={2} variant="faded" label="Precinto" options={optionsPrecinto} />
+          <Select defaultValue={1} variant="faded" label="Fecha de Vencimiento" options={optionsFechaVencimiento} />
         </form>
       )
     }
@@ -252,6 +295,14 @@ export function Home() {
         </form>
       )
     }
+
+    if (step == 9) {
+      return (
+        <div>
+          <p>Kilometraje: {formData.kilometraje}</p>
+        </div>
+      );
+    }
   }
 
   useEffect(() => {
@@ -264,12 +315,13 @@ export function Home() {
       6: 'Documentos Legales',
       7: 'Frenos. Dirección',
       8: 'Limpieza del Habitáculo',
+      9: 'Veificar datos',
     };
 
     setSubtitle(subtitles[step] || '');
   }, [step]);
 
-  const nextStep = () => setStep(prevStep => Math.min(prevStep + 1, 8));
+  const nextStep = () => setStep(prevStep => Math.min(prevStep + 1, 9));
   const prevStep = () => setStep(prevStep => Math.max(prevStep - 1, 1));
 
   return (
@@ -360,14 +412,18 @@ export function Home() {
         title="Checklist semanal"
         subtitle={`${subtitle} - Paso ${step}/8`}
         isOpen={isModalOpen}
-        handleModal={closeModal} size="3xl">
+        handleModal={closeModal} size="3xl"
+      >
         {renderForm()}
         <footer className="mt-6 gap-2 flex flex-col sm:flex-row justify-end">
-          <Button onClick={prevStep} variant="ghost">
+          <Button addClassNames="!ring-0" onClick={prevStep} variant="ghost" color="zinc">
             Anterior
           </Button>
-          <Button onClick={nextStep}>
+          <Button addClassNames="!ring-0" onClick={nextStep} variant="solid" color="zinc">
             Siguiente
+          </Button>
+          <Button addClassNames="!ring-0 " color="green" onClick={() => setStep(9)}>
+            Ir al final <ClipboardDocumentCheckIcon className="size-4 ml-2" />
           </Button>
         </footer>
       </Modal>
