@@ -4,72 +4,145 @@ import { Button, Input, Modal, Select, Textarea, Tooltip } from "tamnora-react";
 import { useState, useEffect } from "react";
 import { DarkModeBtn } from "../components/DarkModeBtn";
 
+// Define los datos base del formulario como un objeto independiente
+const initialFormData = {
+  datosGenerales: {
+    kilometraje: '',
+  },
+  estadoCubiertas: {
+    delanteraIzquierda: 3,
+    delanteraDerecha: 3,
+    traseraIzquierda: 3,
+    traseraDerecha: 3,
+    ruedaAuxilio: 3,
+    observacion: ''
+  },
+  niveles: {
+    aceite: 3,
+    agua: 3,
+    frenos: 3,
+    observacion: '',
+  },
+  vidrios: {
+    parabrisas: 3,
+    espejosLaterales: 3,
+    ventanas: 3,
+    observacion: '',
+  },
+  extintor: {
+    precinto: 2,
+    carga: 2,
+    fechaVencimiento: 1,
+    observacion: '',
+  },
+  documentos: {
+    vtv: 2,
+    poliza: 2,
+    tarjetaVerde: 2,
+    observacion: '',
+  },
+  frenosDireccion: {
+    amortiguadores: 3,
+    frenos: 3,
+    direccion: 2,
+    observacion: '',
+  },
+  limpieza: {
+    estadoGeneral: 2,
+    tablero: 3,
+    tapizados: 3,
+    observacion: '',
+  }
+};
+
+// Define las opciones de los Select como constantes para facilitar la reutilización
+const estadoCubiertasOptions = [
+  { value: 0, label: 'Neumático pinchado' },
+  { value: 1, label: 'Desgaste severo' },
+  { value: 2, label: 'Desgaste leve' },
+  { value: 3, label: 'Buen estado' }
+];
+
+const nivelesOptions = [
+  { value: 0, label: 'Observaciones' },
+  { value: 1, label: 'Fuga' },
+  { value: 2, label: 'Bajo' },
+  { value: 3, label: 'Normal' }
+];
+
+const parabrisasOptions = [
+  { value: 0, label: 'Otros daños' },
+  { value: 1, label: 'Rajado' },
+  { value: 2, label: 'Astillado' },
+  { value: 3, label: 'Sano' }
+];
+
+const espejosVentanasOptions = [
+  { value: 0, label: 'Otros daños' },
+  { value: 1, label: 'Rotura severa' },
+  { value: 2, label: 'Rotura leve' },
+  { value: 3, label: 'Sanos' }
+];
+
+const extintorPrecintoOptions = [
+  { value: 0, label: 'Ausente' },
+  { value: 1, label: 'Roto' },
+  { value: 2, label: 'Intacto' }
+];
+
+const extintorCargaOptions = [
+  { value: 0, label: 'Vacía' },
+  { value: 1, label: 'Incompleta' },
+  { value: 2, label: 'Completa' }
+];
+
+const extintorFechaVencimientoOptions = [
+  { value: 0, label: 'Vencida' },
+  { value: 1, label: 'Vigente' }
+];
+
+const documentosOptions = [
+  { value: 0, label: 'No aplicable' },
+  { value: 1, label: 'Vencida' },
+  { value: 2, label: 'Vigente' }
+];
+
+const amortiguadoresFrenosOptions = [
+  { value: 0, label: 'Requiere cambio' },
+  { value: 1, label: 'Desgaste severo' },
+  { value: 2, label: 'Desgaste leve' },
+  { value: 3, label: 'Buen estado' }
+];
+
+const direccionOptions = [
+  { value: 0, label: 'Otros problemas' },
+  { value: 1, label: 'Juego en dirección' },
+  { value: 2, label: 'Funciona correctamente' }
+];
+
+const estadoGeneralOptions = [
+  { value: 0, label: 'Muy sucio' },
+  { value: 1, label: 'Sucio' },
+  { value: 2, label: 'Limpio' }
+];
+
+const tableroTapizadosOptions = [
+  { value: 0, label: 'Daños' },
+  { value: 1, label: 'Desgaste' },
+  { value: 2, label: 'Sucios' },
+  { value: 3, label: 'Limpios' }
+];
+
 export function Home() {
   const [vehiculos, setVehiculos] = useState([]);
   const [historial, setHistorial] = useState([]);
+  const [subtitle, setSubtitle] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [step, setStep] = useState(1);
-  const [subtitle, setSubtitle] = useState('');
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState(initialFormData); // Inicializa formData
 
-  let datosBase = {
-    datosGenerales: {
-      kilometraje: '',
-    },
-    estadoCubiertas: {
-      delanteraIzquierda: 3,
-      delanteraDerecha: 3,
-      traseraIzquierda: 3,
-      traseraDerecha: 3,
-      ruedaAuxilio: 3,
-      observacion: ''
-    },
-    niveles: {
-      aceite: 3,
-      agua: 3,
-      frenos: 3,
-      observacion: '',
-    },
-    vidrios: {
-      parabrisas: 3,
-      espejosLaterales: 3,
-      ventanas: 3,
-      observacion: '',
-    },
-    extintor: {
-      precinto: 2,
-      carga: 2,
-      fechaVencimiento: 1,
-      observacion: '',
-    },
-    documentos: {
-      vtv: 2,
-      poliza: 2,
-      tarjetaVerde: 2,
-      observacion: '',
-    },
-    frenosDireccion: {
-      amortiguadores: 3,
-      frenos: 3,
-      direccion: 2,
-      observacion: '',
-    },
-    limpieza: {
-      estadoGeneral: 2,
-      tablero: 3,
-      tapizados: 3,
-      observacion: '',
-    },
-  }
-
-  const [formData, setFormData] = useState(datosBase);
-
-  function closeModal() {
-    setFormData(datosBase)
-    setStep(1)
-    setIsModalOpen(false);
-  }
-
+  // Define una función para actualizar formData de forma declarativa
   const handleChange = (section, field, value) => {
     setFormData(prevState => ({
       ...prevState,
@@ -80,7 +153,14 @@ export function Home() {
     }));
   };
 
+  // Define una función para cerrar el modal y resetear formData y step
+  function closeModal() {
+    setFormData(initialFormData); // Resetea formData al inicial
+    setStep(1);
+    setIsModalOpen(false);
+  }
 
+  // useEffect para inicializar datos
   useEffect(() => {
     setVehiculos([
       {
@@ -117,9 +197,9 @@ export function Home() {
     ]);
   }, []);
 
-
+  // Define una función para renderizar el formulario de cada paso
   function renderForm() {
-    if (step == 1) {
+    if (step === 1) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
@@ -138,16 +218,10 @@ export function Home() {
             />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 2) {
-      let options = [
-        { value: 0, label: 'Neumático pinchado' },
-        { value: 1, label: 'Desgaste severo' },
-        { value: 2, label: 'Desgaste leve' },
-        { value: 3, label: 'Buen estado' }
-      ]
+    if (step === 2) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
@@ -156,26 +230,26 @@ export function Home() {
               onChange={(e) => handleChange('estadoCubiertas', 'delanteraIzquierda', e)}
               variant="faded"
               label="Delantera izquierda"
-              options={options}
+              options={estadoCubiertasOptions}
             />
             <Select
               defaultValue={formData.estadoCubiertas.delanteraDerecha}
               onChange={(e) => handleChange('estadoCubiertas', 'delanteraDerecha', e)}
               variant="faded"
               label="Delantera derecha"
-              options={options} />
+              options={estadoCubiertasOptions} />
             <Select
               defaultValue={formData.estadoCubiertas.traseraIzquierda}
               onChange={(e) => handleChange('estadoCubiertas', 'traseraIzquierda', e)}
               variant="faded"
               label="Trasera izquierda"
-              options={options} />
+              options={estadoCubiertasOptions} />
             <Select
               defaultValue={formData.estadoCubiertas.traseraDerecha}
               onChange={(e) => handleChange('estadoCubiertas', 'traseraDerecha', e)}
               variant="faded"
               label="Trasera derecha"
-              options={options} />
+              options={estadoCubiertasOptions} />
           </div>
           <div className="grid gap-3 mt-3">
             <Select
@@ -183,7 +257,7 @@ export function Home() {
               onChange={(e) => handleChange('estadoCubiertas', 'ruedaAuxilio', e)}
               variant="faded"
               label="Rueda de auxilio"
-              options={options} />
+              options={estadoCubiertasOptions} />
             <Textarea
               variant="faded"
               label="Observaciones"
@@ -191,17 +265,10 @@ export function Home() {
               placeholder="Ingresar detalles extra de las cubiertas en caso de ser necesario." />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 3) {
-      let options = [
-        { value: 0, label: 'Observaciones' },
-        { value: 1, label: 'Fuga' },
-        { value: 2, label: 'Bajo' },
-        { value: 3, label: 'Normal' }
-      ];
-
+    if (step === 3) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-3 gap-3">
@@ -210,19 +277,19 @@ export function Home() {
               onChange={(e) => handleChange('niveles', 'aceite', e)}
               variant="faded"
               label="Nivel de Aceite"
-              options={options} />
+              options={nivelesOptions} />
             <Select
               defaultValue={formData.niveles.agua}
               onChange={(e) => handleChange('niveles', 'agua', e)}
               variant="faded"
               label="Nivel de Agua"
-              options={options} />
+              options={nivelesOptions} />
             <Select
               defaultValue={formData.niveles.frenos}
               onChange={(e) => handleChange('niveles', 'frenos', e)}
               variant="faded"
               label="Nivel de Líquido de Frenos"
-              options={options} />
+              options={nivelesOptions} />
           </div>
           <div className="grid gap-3 mt-3">
             <Textarea
@@ -233,24 +300,10 @@ export function Home() {
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 4) {
-      let optionsParabrisas = [
-        { value: 0, label: 'Otros daños' },
-        { value: 1, label: 'Rajado' },
-        { value: 2, label: 'Astillado' },
-        { value: 3, label: 'Sano' }
-      ];
-
-      let optionsEspejosVentanas = [
-        { value: 0, label: 'Otros daños' },
-        { value: 1, label: 'Rotura severa' },
-        { value: 2, label: 'Rotura leve' },
-        { value: 3, label: 'Sanos' }
-      ];
-
+    if (step === 4) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
@@ -259,13 +312,13 @@ export function Home() {
               onChange={(e) => handleChange('vidrios', 'parabrisas', e)}
               variant="faded"
               label="Parabrisas"
-              options={optionsParabrisas} />
+              options={parabrisasOptions} />
             <Select
               defaultValue={formData.vidrios.espejosLaterales}
               onChange={(e) => handleChange('vidrios', 'espejosLaterales', e)}
               variant="faded"
               label="Espejos Laterales"
-              options={optionsEspejosVentanas} />
+              options={espejosVentanasOptions} />
           </div>
           <div className="grid gap-3 mt-3">
             <Select
@@ -273,7 +326,7 @@ export function Home() {
               onChange={(e) => handleChange('vidrios', 'ventanas', e)}
               variant="faded"
               label="Ventanas"
-              options={optionsEspejosVentanas} />
+              options={espejosVentanasOptions} />
             <Textarea
               defaultValue={formData.vidrios.observacion}
               onChange={(e) => handleChange('vidrios', 'observacion', e.target.value)}
@@ -282,27 +335,10 @@ export function Home() {
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 5) {
-      let optionsPrecinto = [
-        { value: 0, label: 'Ausente' },
-        { value: 1, label: 'Roto' },
-        { value: 2, label: 'Intacto' }
-      ];
-
-      let optionsCarga = [
-        { value: 0, label: 'Vacía' },
-        { value: 1, label: 'Incompleta' },
-        { value: 2, label: 'Completa' }
-      ];
-
-      let optionsFechaVencimiento = [
-        { value: 0, label: 'Vencida' },
-        { value: 1, label: 'Vigente' }
-      ];
-
+    if (step === 5) {
       return (
         <form className="min-h-[144px]" action="">
           <div className="grid sm:grid-cols-3 gap-3">
@@ -310,17 +346,17 @@ export function Home() {
               defaultValue={formData.extintor.carga}
               variant="faded"
               label="Carga"
-              options={optionsCarga} />
+              options={extintorCargaOptions} />
             <Select
               defaultValue={formData.extintor.precinto}
               variant="faded"
               label="Precinto"
-              options={optionsPrecinto} />
+              options={extintorPrecintoOptions} />
             <Select
               defaultValue={formData.extintor.fechaVencimiento}
               variant="faded"
               label="Fecha de Vencimiento"
-              options={optionsFechaVencimiento} />
+              options={extintorFechaVencimientoOptions} />
           </div>
           <div>
             <Textarea
@@ -331,31 +367,25 @@ export function Home() {
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 6) {
-      let optionsDocumentos = [
-        { value: 0, label: 'No aplicable' },
-        { value: 1, label: 'Vencida' },
-        { value: 2, label: 'Vigente' }
-      ];
-
+    if (step === 6) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-3 gap-3">
             <Select
               defaultValue={formData.documentos.vtv}
               variant="faded"
-              label="VTV" options={optionsDocumentos} />
+              label="VTV" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.poliza}
               variant="faded"
-              label="Póliza de Seguro" options={optionsDocumentos} />
+              label="Póliza de Seguro" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.tarjetaVerde}
               variant="faded"
-              label="Tarjeta Verde" options={optionsDocumentos} />
+              label="Tarjeta Verde" options={documentosOptions} />
           </div>
           <div>
             <Textarea
@@ -366,23 +396,10 @@ export function Home() {
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 7) {
-      let optionsAmortiguadoresFrenos = [
-        { value: 0, label: 'Requiere cambio' },
-        { value: 1, label: 'Desgaste severo' },
-        { value: 2, label: 'Desgaste leve' },
-        { value: 3, label: 'Buen estado' }
-      ];
-
-      let optionsDireccion = [
-        { value: 0, label: 'Otros problemas' },
-        { value: 1, label: 'Juego en dirección' },
-        { value: 2, label: 'Funciona correctamente' }
-      ];
-
+    if (step === 7) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
@@ -390,19 +407,19 @@ export function Home() {
               defaultValue={formData.frenosDireccion.amortiguadores}
               variant="faded"
               label="Amortiguadores"
-              options={optionsAmortiguadoresFrenos} />
+              options={amortiguadoresFrenosOptions} />
             <Select
               defaultValue={formData.frenosDireccion.frenos}
               variant="faded"
               label="Frenos"
-              options={optionsAmortiguadoresFrenos} />
+              options={amortiguadoresFrenosOptions} />
           </div>
           <div className="grid gap-3 mt-3">
             <Select
               defaultValue={formData.frenosDireccion.direccion}
               variant="faded"
               label="Dirección"
-              options={optionsDireccion} />
+              options={direccionOptions} />
             <Textarea
               defaultValue={formData.frenosDireccion.observacion}
               onChange={(e) => handleChange('frenosDireccion', 'observacion', e.target.value)}
@@ -411,23 +428,10 @@ export function Home() {
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 8) {
-      let optionsEstadoGeneral = [
-        { value: 0, label: 'Muy sucio' },
-        { value: 1, label: 'Sucio' },
-        { value: 2, label: 'Limpio' }
-      ];
-
-      let optionsTableroTapizados = [
-        { value: 0, label: 'Daños' },
-        { value: 1, label: 'Desgaste' },
-        { value: 2, label: 'Sucios' },
-        { value: 3, label: 'Limpios' }
-      ];
-
+    if (step === 8) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
@@ -435,19 +439,19 @@ export function Home() {
               defaultValue={formData.limpieza.estadoGeneral}
               variant="faded"
               label="Estado General"
-              options={optionsEstadoGeneral} />
+              options={estadoGeneralOptions} />
             <Select
               defaultValue={formData.limpieza.tablero}
               variant="faded"
               label="Tablero de Instrumentos"
-              options={optionsTableroTapizados} />
+              options={tableroTapizadosOptions} />
           </div>
           <div className="grid gap-3 mt-3">
             <Select
               defaultValue={formData.limpieza.tapizados}
               variant="faded"
               label="Tapizados"
-              options={optionsTableroTapizados} />
+              options={tableroTapizadosOptions} />
             <Textarea
               defaultValue={formData.limpieza.observacion}
               onChange={(e) => handleChange('limpieza', 'observacion', e.target.value)}
@@ -456,10 +460,10 @@ export function Home() {
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
-      )
+      );
     }
 
-    if (step == 9) {
+    if (step === 9) {
       return (
         <div className="max-h-dvh sm:max-h-80 overflow-y-auto grid grid-cols-2">
           <div className="col-span-2">
@@ -544,6 +548,7 @@ export function Home() {
     }
   }
 
+  // Define una función para actualizar el subtítulo del modal
   useEffect(() => {
     const subtitles = {
       1: 'Información general',
@@ -560,19 +565,26 @@ export function Home() {
     setSubtitle(subtitles[step] || '');
   }, [step]);
 
+  // Define las funciones para controlar los pasos del formulario
   const nextStep = () => {
     if (step === 1 && formData.datosGenerales.kilometraje == "") {
-      return
+      setError('El kilometraje es obligatorio.')
+      return;
     }
-    setStep(prevStep => Math.min(prevStep + 1, 9))
+    setStep(prevStep => Math.min(prevStep + 1, 9));
+    setError('')
   };
+
   const prevStep = () => setStep(prevStep => Math.max(prevStep - 1, 1));
+
   const lastStep = () => {
     if (step === 1 && formData.datosGenerales.kilometraje == "") {
-      return
+      setError('El kilometraje es obligatorio.')
+      return;
     }
-    setStep(9)
-  }
+    setStep(9);
+    setError('')
+  };
 
   return (
     <>
@@ -669,11 +681,11 @@ export function Home() {
             }
           </p>
         }
-        // subtitle={subtitle}
         isOpen={isModalOpen}
         handleModal={closeModal} size="3xl"
       >
         {renderForm()}
+        {error !== '' && <p className="text-red-500 text-sm">{error}</p>}
         <footer className="mt-6 gap-2 flex flex-col sm:flex-row justify-end">
           <Button addClassNames="!ring-0" isDisabled={step === 1} onClick={prevStep} variant="ghost" color="zinc">
             Anterior
