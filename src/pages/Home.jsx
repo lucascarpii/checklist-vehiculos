@@ -675,8 +675,8 @@ export function Home() {
           <p className="inline-flex items-center gap-2">
             {subtitle}
             {step !== 9 &&
-              <span className="bg-green-700 font-light text-white px-2 py-[1px] rounded-full text-sm">
-                {step}/8
+              <span className="bg-green-700 font-light text-white px-2.5 py-[2px] rounded-full text-xs">
+                {step} / 8
               </span>
             }
           </p>
