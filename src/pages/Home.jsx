@@ -12,63 +12,74 @@ export function Home() {
   const [step, setStep] = useState(1);
   const [subtitle, setSubtitle] = useState('');
 
-  function closeModal() {
-    setStep(1)
-    setIsModalOpen(false);
-  }
-
-  const [formData, setFormData] = useState({
-    kilometraje: '',
+  let datosBase = {
+    datosGenerales: {
+      kilometraje: '',
+    },
     estadoCubiertas: {
       delanteraIzquierda: 3,
       delanteraDerecha: 3,
       traseraIzquierda: 3,
       traseraDerecha: 3,
       ruedaAuxilio: 3,
+      observacion: ''
     },
     niveles: {
       aceite: 3,
       agua: 3,
       frenos: 3,
-      otrosFluidos: '',
+      observacion: '',
     },
     vidrios: {
       parabrisas: 3,
       espejosLaterales: 3,
       ventanas: 3,
+      observacion: '',
     },
     extintor: {
       precinto: 2,
       carga: 2,
       fechaVencimiento: 1,
+      observacion: '',
     },
     documentos: {
       vtv: 2,
       poliza: 2,
       tarjetaVerde: 2,
+      observacion: '',
     },
     frenosDireccion: {
       amortiguadores: 3,
       frenos: 3,
       direccion: 2,
+      observacion: '',
     },
     limpieza: {
       estadoGeneral: 2,
       tablero: 3,
       tapizados: 3,
+      observacion: '',
     },
-  });
+  }
 
-  // Función para actualizar datos
+  const [formData, setFormData] = useState(datosBase);
+
+  function closeModal() {
+    setFormData(datosBase)
+    setStep(1)
+    setIsModalOpen(false);
+  }
+
   const handleChange = (section, field, value) => {
-    setFormData(prev => ({
-      ...prev,
+    setFormData(prevState => ({
+      ...prevState,
       [section]: {
-        ...prev[section],
-        [field]: value
+        ...prevState[section],
+        [field]: value,
       }
     }));
   };
+
 
   useEffect(() => {
     setVehiculos([
@@ -110,20 +121,27 @@ export function Home() {
   function renderForm() {
     if (step == 1) {
       return (
-        <form action="">
+        <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
             <Input isReadOnly label="Patente" defaultValue="OBJ680" variant="faded" />
             <Input isReadOnly label="Fecha" defaultValue="04/08/2024" variant="faded" />
           </div>
           <div className="grid grid-cols-1 gap-3 mt-3">
-            <Input defaultValue={formData.kilometraje} isRequired label="Kilometraje" placeholder="Ingresar km del vehiculo" variant="faded" />
+            <Input
+              type="number"
+              value={formData.datosGenerales.kilometraje}
+              onChange={(e) => handleChange('datosGenerales', 'kilometraje', e.target.value)}
+              variant="faded"
+              label="Kilometraje"
+              placeholder="Ingresar km del vehiculo"
+              isRequired
+            />
           </div>
         </form>
       )
     }
 
     if (step == 2) {
-      // [Buen estado / Desgaste leve / Desgaste severo / Neumático pinchado]
       let options = [
         { value: 0, label: 'Neumático pinchado' },
         { value: 1, label: 'Desgaste severo' },
@@ -131,16 +149,46 @@ export function Home() {
         { value: 3, label: 'Buen estado' }
       ]
       return (
-        <form action="">
+        <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
-            <Select defaultValue={3} variant="faded" label="Delantera izquierda" options={options} />
-            <Select defaultValue={3} variant="faded" label="Delantera derecha" options={options} />
-            <Select defaultValue={3} variant="faded" label="Trasera izquierda" options={options} />
-            <Select defaultValue={3} variant="faded" label="Trasera derecha" options={options} />
+            <Select
+              defaultValue={formData.estadoCubiertas.delanteraIzquierda}
+              onChange={(e) => handleChange('estadoCubiertas', 'delanteraIzquierda', e)}
+              variant="faded"
+              label="Delantera izquierda"
+              options={options}
+            />
+            <Select
+              defaultValue={formData.estadoCubiertas.delanteraDerecha}
+              onChange={(e) => handleChange('estadoCubiertas', 'delanteraDerecha', e)}
+              variant="faded"
+              label="Delantera derecha"
+              options={options} />
+            <Select
+              defaultValue={formData.estadoCubiertas.traseraIzquierda}
+              onChange={(e) => handleChange('estadoCubiertas', 'traseraIzquierda', e)}
+              variant="faded"
+              label="Trasera izquierda"
+              options={options} />
+            <Select
+              defaultValue={formData.estadoCubiertas.traseraDerecha}
+              onChange={(e) => handleChange('estadoCubiertas', 'traseraDerecha', e)}
+              variant="faded"
+              label="Trasera derecha"
+              options={options} />
           </div>
           <div className="grid gap-3 mt-3">
-            <Select defaultValue={3} variant="faded" label="Rueda de auxilio" options={options} />
-            <Textarea variant="faded" label="Observaciones" placeholder="Ingresar detalles extra de las cubiertas en caso de ser necesario." />
+            <Select
+              defaultValue={3}
+              onChange={(e) => handleChange('estadoCubiertas', 'ruedaAuxilio', e)}
+              variant="faded"
+              label="Rueda de auxilio"
+              options={options} />
+            <Textarea
+              variant="faded"
+              label="Observaciones"
+              onChange={(e) => handleChange('estadoCubiertas', 'observacion', e.target.value)}
+              placeholder="Ingresar detalles extra de las cubiertas en caso de ser necesario." />
           </div>
         </form>
       )
@@ -155,14 +203,34 @@ export function Home() {
       ];
 
       return (
-        <form action="">
+        <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-3 gap-3">
-            <Select defaultValue={3} variant="faded" label="Nivel de Aceite" options={options} />
-            <Select defaultValue={3} variant="faded" label="Nivel de Agua" options={options} />
-            <Select defaultValue={3} variant="faded" label="Nivel de Líquido de Frenos" options={options} />
+            <Select
+              defaultValue={formData.niveles.aceite}
+              onChange={(e) => handleChange('niveles', 'aceite', e)}
+              variant="faded"
+              label="Nivel de Aceite"
+              options={options} />
+            <Select
+              defaultValue={formData.niveles.agua}
+              onChange={(e) => handleChange('niveles', 'agua', e)}
+              variant="faded"
+              label="Nivel de Agua"
+              options={options} />
+            <Select
+              defaultValue={formData.niveles.frenos}
+              onChange={(e) => handleChange('niveles', 'frenos', e)}
+              variant="faded"
+              label="Nivel de Líquido de Frenos"
+              options={options} />
           </div>
           <div className="grid gap-3 mt-3">
-            <Textarea variant="faded" label="Otros Fluidos" placeholder="Ingresar detalles sobre otros fluidos en caso de ser necesario." />
+            <Textarea
+              defaultValue={formData.niveles.observacion}
+              onChange={(e) => handleChange('niveles', 'observacion', e.target.value)}
+              variant="faded"
+              label="Observaciones"
+              placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
       )
@@ -184,14 +252,34 @@ export function Home() {
       ];
 
       return (
-        <form action="">
+        <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
-            <Select defaultValue={3} variant="faded" label="Parabrisas" options={optionsParabrisas} />
-            <Select defaultValue={3} variant="faded" label="Espejos Laterales" options={optionsEspejosVentanas} />
+            <Select
+              defaultValue={formData.vidrios.parabrisas}
+              onChange={(e) => handleChange('vidrios', 'parabrisas', e)}
+              variant="faded"
+              label="Parabrisas"
+              options={optionsParabrisas} />
+            <Select
+              defaultValue={formData.vidrios.espejosLaterales}
+              onChange={(e) => handleChange('vidrios', 'espejosLaterales', e)}
+              variant="faded"
+              label="Espejos Laterales"
+              options={optionsEspejosVentanas} />
           </div>
           <div className="grid gap-3 mt-3">
-            <Select defaultValue={3} variant="faded" label="Ventanas" options={optionsEspejosVentanas} />
-            <Textarea variant="faded" label="Observacion" placeholder="Ingresar detalles sobre otros daños en caso de ser necesario." />
+            <Select
+              defaultValue={formData.vidrios.ventanas}
+              onChange={(e) => handleChange('vidrios', 'ventanas', e)}
+              variant="faded"
+              label="Ventanas"
+              options={optionsEspejosVentanas} />
+            <Textarea
+              defaultValue={formData.vidrios.observacion}
+              onChange={(e) => handleChange('vidrios', 'observacion', e.target.value)}
+              variant="faded"
+              label="Observaciones"
+              placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
       )
@@ -216,10 +304,32 @@ export function Home() {
       ];
 
       return (
-        <form className="grid sm:grid-cols-3 gap-3" action="">
-          <Select defaultValue={2} variant="faded" label="Carga" options={optionsCarga} />
-          <Select defaultValue={2} variant="faded" label="Precinto" options={optionsPrecinto} />
-          <Select defaultValue={1} variant="faded" label="Fecha de Vencimiento" options={optionsFechaVencimiento} />
+        <form className="min-h-[144px]" action="">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Select
+              defaultValue={formData.extintor.carga}
+              variant="faded"
+              label="Carga"
+              options={optionsCarga} />
+            <Select
+              defaultValue={formData.extintor.precinto}
+              variant="faded"
+              label="Precinto"
+              options={optionsPrecinto} />
+            <Select
+              defaultValue={formData.extintor.fechaVencimiento}
+              variant="faded"
+              label="Fecha de Vencimiento"
+              options={optionsFechaVencimiento} />
+          </div>
+          <div>
+            <Textarea
+              defaultValue={formData.extintor.observacion}
+              onChange={(e) => handleChange('extintor', 'observacion', e.target.value)}
+              variant="faded"
+              label="Observaciones"
+              placeholder="Ingresar detalles en caso de ser necesario." />
+          </div>
         </form>
       )
     }
@@ -232,11 +342,28 @@ export function Home() {
       ];
 
       return (
-        <form action="">
+        <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-3 gap-3">
-            <Select defaultValue={2} variant="faded" label="VTV" options={optionsDocumentos} />
-            <Select defaultValue={2} variant="faded" label="Póliza de Seguro" options={optionsDocumentos} />
-            <Select defaultValue={2} variant="faded" label="Tarjeta Verde" options={optionsDocumentos} />
+            <Select
+              defaultValue={formData.documentos.vtv}
+              variant="faded"
+              label="VTV" options={optionsDocumentos} />
+            <Select
+              defaultValue={formData.documentos.poliza}
+              variant="faded"
+              label="Póliza de Seguro" options={optionsDocumentos} />
+            <Select
+              defaultValue={formData.documentos.tarjetaVerde}
+              variant="faded"
+              label="Tarjeta Verde" options={optionsDocumentos} />
+          </div>
+          <div>
+            <Textarea
+              defaultValue={formData.documentos.observacion}
+              onChange={(e) => handleChange('documentos', 'observacion', e.target.value)}
+              variant="faded"
+              label="Observaciones"
+              placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
       )
@@ -257,13 +384,31 @@ export function Home() {
       ];
 
       return (
-        <form action="">
+        <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
-            <Select defaultValue={3} variant="faded" label="Amortiguadores" options={optionsAmortiguadoresFrenos} />
-            <Select defaultValue={3} variant="faded" label="Frenos" options={optionsAmortiguadoresFrenos} />
+            <Select
+              defaultValue={formData.frenosDireccion.amortiguadores}
+              variant="faded"
+              label="Amortiguadores"
+              options={optionsAmortiguadoresFrenos} />
+            <Select
+              defaultValue={formData.frenosDireccion.frenos}
+              variant="faded"
+              label="Frenos"
+              options={optionsAmortiguadoresFrenos} />
           </div>
           <div className="grid gap-3 mt-3">
-            <Select defaultValue={2} variant="faded" label="Dirección" options={optionsDireccion} />
+            <Select
+              defaultValue={formData.frenosDireccion.direccion}
+              variant="faded"
+              label="Dirección"
+              options={optionsDireccion} />
+            <Textarea
+              defaultValue={formData.frenosDireccion.observacion}
+              onChange={(e) => handleChange('frenosDireccion', 'observacion', e.target.value)}
+              variant="faded"
+              label="Observaciones"
+              placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
       )
@@ -284,13 +429,31 @@ export function Home() {
       ];
 
       return (
-        <form action="">
+        <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
-            <Select defaultValue={2} variant="faded" label="Estado General" options={optionsEstadoGeneral} />
-            <Select defaultValue={3} variant="faded" label="Tablero de Instrumentos" options={optionsTableroTapizados} />
+            <Select
+              defaultValue={formData.limpieza.estadoGeneral}
+              variant="faded"
+              label="Estado General"
+              options={optionsEstadoGeneral} />
+            <Select
+              defaultValue={formData.limpieza.tablero}
+              variant="faded"
+              label="Tablero de Instrumentos"
+              options={optionsTableroTapizados} />
           </div>
           <div className="grid gap-3 mt-3">
-            <Select defaultValue={3} variant="faded" label="Tapizados" options={optionsTableroTapizados} />
+            <Select
+              defaultValue={formData.limpieza.tapizados}
+              variant="faded"
+              label="Tapizados"
+              options={optionsTableroTapizados} />
+            <Textarea
+              defaultValue={formData.limpieza.observacion}
+              onChange={(e) => handleChange('limpieza', 'observacion', e.target.value)}
+              variant="faded"
+              label="Observaciones"
+              placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
         </form>
       )
@@ -298,8 +461,84 @@ export function Home() {
 
     if (step == 9) {
       return (
-        <div>
-          <p>Kilometraje: {formData.kilometraje}</p>
+        <div className="max-h-dvh sm:max-h-80 overflow-y-auto grid grid-cols-2">
+          <div className="col-span-2">
+            <h2>Resumen del Checklist</h2>
+            <p className="text-sm text-zinc-500">Kilometraje: {formData.datosGenerales.kilometraje}</p>
+          </div>
+
+          <div>
+            <h3 className="">Estado de Cubiertas</h3>
+            <ul className="break-words text-sm text-zinc-500">
+              <li>Delantera Izquierda: {formData.estadoCubiertas.delanteraIzquierda}</li>
+              <li>Delantera Derecha: {formData.estadoCubiertas.delanteraDerecha}</li>
+              <li>Trasera Izquierda: {formData.estadoCubiertas.traseraIzquierda}</li>
+              <li>Trasera Derecha: {formData.estadoCubiertas.traseraDerecha}</li>
+              <li>Rueda de auxilio: {formData.estadoCubiertas.ruedaAuxilio}</li>
+              <li>Observaciones: {formData.estadoCubiertas.observacion}</li>
+            </ul>
+
+          </div>
+
+          <div>
+            <h3 className="">Verificación de Fluidos</h3>
+            <ul className="break-words text-sm text-zinc-500">
+              <li>Aceite: {formData.niveles.aceite}</li>
+              <li>Agua: {formData.niveles.agua}</li>
+              <li>Líquido de frenos: {formData.niveles.frenos}</li>
+              <li>Observaciones: {formData.niveles.observacion}</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="">Vidrios y Parabrisas</h3>
+            <ul className="break-words text-sm text-zinc-500">
+              <li>Parabrisas: {formData.vidrios.parabrisas}</li>
+              <li>Espejos Laterales: {formData.vidrios.espejosLaterales}</li>
+              <li>Ventanas: {formData.vidrios.ventanas}</li>
+              <li>Observaciones: {formData.vidrios.observacion}</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="">Extintor</h3>
+            <ul className="break-words text-sm text-zinc-500">
+              <li>Precinto: {formData.extintor.precinto}</li>
+              <li>Carga: {formData.extintor.carga}</li>
+              <li>Fecha de Vencimiento: {formData.extintor.fechaVencimiento}</li>
+              <li>Observaciones: {formData.extintor.observacion}</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="">Documentos Legales</h3>
+            <ul className="break-words text-sm text-zinc-500">
+              <li>VTV: {formData.documentos.vtv}</li>
+              <li>Póliza de Seguro: {formData.documentos.poliza}</li>
+              <li>Tarjeta Verde: {formData.documentos.tarjetaVerde}</li>
+              <li>Observaciones: {formData.documentos.observacion}</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="">Frenos. Dirección</h3>
+            <ul className="break-words text-sm text-zinc-500">
+              <li>Amortiguadores: {formData.frenosDireccion.amortiguadores}</li>
+              <li>Frenos: {formData.frenosDireccion.frenos}</li>
+              <li>Dirección: {formData.frenosDireccion.direccion}</li>
+              <li>Observaciones: {formData.frenosDireccion.observacion}</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="">Limpieza del Habitáculo</h3>
+            <ul className="break-words text-sm text-zinc-500">
+              <li>Estado General: {formData.limpieza.estadoGeneral}</li>
+              <li>Tablero de Instrumentos: {formData.limpieza.tablero}</li>
+              <li>Tapizados: {formData.limpieza.tapizados}</li>
+              <li>Observaciones: {formData.limpieza.observacion}</li>
+            </ul>
+          </div>
         </div>
       );
     }
@@ -321,8 +560,19 @@ export function Home() {
     setSubtitle(subtitles[step] || '');
   }, [step]);
 
-  const nextStep = () => setStep(prevStep => Math.min(prevStep + 1, 9));
+  const nextStep = () => {
+    if (step === 1 && formData.datosGenerales.kilometraje == "") {
+      return
+    }
+    setStep(prevStep => Math.min(prevStep + 1, 9))
+  };
   const prevStep = () => setStep(prevStep => Math.max(prevStep - 1, 1));
+  const lastStep = () => {
+    if (step === 1 && formData.datosGenerales.kilometraje == "") {
+      return
+    }
+    setStep(9)
+  }
 
   return (
     <>
@@ -347,7 +597,7 @@ export function Home() {
         {vehiculos.length > 0 ?
           <>
             <div>
-              <h2 className="text-lg mb-3">{vehiculos.length > 1 ? 'Vehículos asignados' : 'Vehículo asignado'}</h2>
+              <h2 className="text-md mb-3">{vehiculos.length > 1 ? 'Vehículos asignados' : 'Vehículo asignado'}</h2>
               <div className="grid grid-cols-[repeat(auto-fill,_minmax(18rem,_1fr))] gap-y-2 sm:gap-y-3 md:gap-y-5 gap-x-3">
                 {vehiculos.map((vehiculo) => {
                   return (
@@ -366,14 +616,14 @@ export function Home() {
             </div>
 
             <div className="rounded-xl border-2 bg-zinc-100 dark:border-zinc-700 pt-4 pb-2 px-2 dark:bg-zinc-800">
-              <h2 className="text-lg font-medium text-zinc-400 mb-3 px-2">Checklists del mes</h2>
+              <h2 className="text-md font-medium text-zinc-400 mb-3 px-2">Checklists del mes</h2>
               {historial.length > 0 ?
                 <ul className="grid dark:divide-zinc-800">
                   {historial.map((item) => {
                     return (
                       <li key={item.id} className="flex rounded-lg justify-between items-center py-3 px-4 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all duration-200">
                         <div className="flex flex-col">
-                          <h3 className="text-lg font-medium">{item.marca} {item.modelo}</h3>
+                          <h3 className="text-md font-medium">{item.marca} {item.modelo}</h3>
                           <p className="text-sm text-zinc-400">{item.empleado}</p>
                         </div>
                         <div className="flex-col text-right">
@@ -409,22 +659,35 @@ export function Home() {
       </section>
 
       <Modal
-        title="Checklist semanal"
-        subtitle={`${subtitle} - Paso ${step}/8`}
+        title={
+          <p className="inline-flex items-center gap-2">
+            {subtitle}
+            {step !== 9 &&
+              <span className="bg-green-700 font-light text-white px-2 py-[1px] rounded-full text-sm">
+                {step}/8
+              </span>
+            }
+          </p>
+        }
+        // subtitle={subtitle}
         isOpen={isModalOpen}
         handleModal={closeModal} size="3xl"
       >
         {renderForm()}
         <footer className="mt-6 gap-2 flex flex-col sm:flex-row justify-end">
-          <Button addClassNames="!ring-0" onClick={prevStep} variant="ghost" color="zinc">
+          <Button addClassNames="!ring-0" isDisabled={step === 1} onClick={prevStep} variant="ghost" color="zinc">
             Anterior
           </Button>
-          <Button addClassNames="!ring-0" onClick={nextStep} variant="solid" color="zinc">
+          <Button addClassNames="!ring-0" isDisabled={step === 9} onClick={nextStep} variant="solid" color="zinc">
             Siguiente
           </Button>
-          <Button addClassNames="!ring-0 " color="green" onClick={() => setStep(9)}>
-            Ir al final <ClipboardDocumentCheckIcon className="size-4 ml-2" />
-          </Button>
+          {step === 9 ?
+            <Button>Enviar checklist</Button>
+            :
+            <Button addClassNames="!ring-0" color="green" onClick={lastStep}>
+              Ir al final <ClipboardDocumentCheckIcon className="size-4 ml-2" />
+            </Button>
+          }
         </footer>
       </Modal>
     </>
