@@ -1,6 +1,6 @@
 // React and Context
 import { useEffect, useState } from "react"
-import { BrowserRouter, Navigate, useRoutes } from "react-router-dom"
+import { BrowserRouter, useRoutes } from "react-router-dom"
 import { useAuth } from "../utils/auth";
 import { AuthProvider, AuthRoute, initLocalStorage } from "../utils/auth";
 
@@ -11,9 +11,7 @@ import { NotFound } from './NotFound';
 
 // Componentes
 import { Layout } from '../Components/Layout';
-import { Sidebar } from "../Components/Sidebar";
-import { BottomNav } from "../Components/BottomNav.jsx";
-import { Historial } from "./Historial.jsx";
+import { AdminHome } from "./AdminHome.jsx";
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -36,9 +34,9 @@ const AppRoutes = () => {
         </AuthRoute>
     },
     {
-      path: '/historial', element:
+      path: '/admin', element:
         <AuthRoute>
-          <Historial />
+          <AdminHome />
         </AuthRoute>
     },
     { path: '/login', element: <Login /> },
@@ -56,8 +54,6 @@ const App = () => {
     <>
       <BrowserRouter>
         <AuthProvider>
-          {/* <Sidebar /> */}
-          {/* <BottomNav /> */}
           <Layout>
             <AppRoutes />
           </Layout>
