@@ -12,6 +12,8 @@ import { NotFound } from './NotFound';
 // Componentes
 import { Layout } from '../Components/Layout';
 import { AdminHome } from "./AdminHome.jsx";
+import { Empleados } from "./Empleados.jsx";
+import { Vehiculos } from "./Vehiculos.jsx";
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -37,6 +39,18 @@ const AppRoutes = () => {
       path: '/admin', element:
         <AuthRoute>
           <AdminHome />
+        </AuthRoute>
+    },
+    {
+      path: '/empleados', element:
+        <AuthRoute>
+          <Empleados />
+        </AuthRoute>
+    },
+    {
+      path: '/vehiculos', element:
+        <AuthRoute>
+          <Vehiculos />
         </AuthRoute>
     },
     { path: '/login', element: <Login /> },

@@ -3,6 +3,7 @@ import { Card } from "../components/Card";
 import { Button, Input, Modal, Select, Textarea, Tooltip } from "tamnora-react";
 import { useState, useEffect } from "react";
 import { DarkModeBtn } from "../components/DarkModeBtn";
+import { useAuth } from "../utils/auth";
 
 // Define los datos base del formulario como un objeto independiente
 const initialFormData = {
@@ -141,6 +142,8 @@ export function Home() {
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState(initialFormData); // Inicializa formData
+
+  const { logout } = useAuth()
 
   // Define una función para actualizar formData de forma declarativa
   const handleChange = (section, field, value) => {
@@ -598,7 +601,7 @@ export function Home() {
             <DarkModeBtn />
           </Tooltip>
           <Tooltip content="Salir" placement="bottom" >
-            <button className="hover:bg-red-100 hover:dark:bg-red-500/10 text-red-600 h-10 w-10 flex items-center justify-center rounded-full">
+            <button onClick={logout} className="hover:bg-red-100 hover:dark:bg-red-500/10 text-red-600 h-10 w-10 flex items-center justify-center rounded-full">
               <ArrowRightStartOnRectangleIcon className="size-6" />
             </button>
           </Tooltip>
