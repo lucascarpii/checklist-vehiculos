@@ -1,21 +1,20 @@
-import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline"
+import { ArrowRightStartOnRectangleIcon, TruckIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { structure, Tooltip } from "tamnora-react"
 import { DarkModeBtn } from "../components/DarkModeBtn"
 import { useAuth } from "../utils/auth"
+import { Link } from "react-router-dom"
 
 export function AdminHome() {
   const { logout } = useAuth()
-
-  async function getData() {
-    await structure('t', 'vehiculos').then(res => console.log(res))
-
-  }
   return (
     <>
       <section className="flex justify-between">
         <div>
           <h1 className="text-xl font-medium">Checklist semanal</h1>
-          <p className="text-sm text-zinc-400 flex items-center gap-1 leading-3"><span className="size-2 rounded-full bg-green-500"></span>Gonzalo Valenzuela</p>
+          <p className="text-sm text-zinc-400 flex items-center gap-1 leading-3">
+            <span className="size-2 rounded-full bg-green-500"></span>
+            Gonzalo Valenzuela
+          </p>
         </div>
         <div className="inline-flex gap-2">
           <Tooltip content="Tema" placement="bottom">
@@ -27,6 +26,20 @@ export function AdminHome() {
             </button>
           </Tooltip>
         </div>
+      </section>
+      <section className="grid md:grid-cols-2 gap-4 mt-10">
+        <Link to="/empleados" className="flex items-center gap-2 active:scale-95 bg-zinc-100 hover:bg-zinc-200 border-2 text-zinc-700 dark:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
+          <UserGroupIcon className="size-5" />
+          <span className="-mb-0.5">
+            Administrar empleados
+          </span>
+        </Link>
+        <Link to="/vehiculos" className="flex items-center gap-2 active:scale-95 bg-zinc-100 hover:bg-zinc-200 border-2 text-zinc-700 dark:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
+          <TruckIcon className="size-5" />
+          <span className="-mb-0.5">
+            Administrar vehiculos
+          </span>
+        </Link>
       </section>
     </>
   )
