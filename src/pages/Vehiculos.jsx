@@ -1,20 +1,23 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AutoForm, Button, Modal, runCode, Table } from "tamnora-react";
+import { AutoForm, Button, Modal, runCode, runCodeStruc, Table } from "tamnora-react";
 
 
 export function Vehiculos() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState(null);
+  const [dataStruc, setDataStruc] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [alertData, setAlertData] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [idSelected, setIdSelected] = useState(0);
 
   const getData = async () => {
-    await runCode('-st vehiculos').then(res => {
-      setTableData(res)
+    await runCodeStruc('-st vehiculos', 'vehiculos').then(res => {
+      setTableData(res.data)
+      setDataStruc(res.struc.types)
+      console.log(dataStruc)
     })
   };
 
@@ -40,6 +43,7 @@ export function Vehiculos() {
   };
   const nuevoVehiculo = () => {
     setFormData({
+      id: 0,
       numero_interno: '',
       patente: '',
       marca: '',
@@ -79,15 +83,16 @@ export function Vehiculos() {
             onSubmit={updateData}
             primaryKey="id"
             idSelected={idSelected}
+            struc={dataStruc}
             textSubmit={idSelected > 0 ? 'Actualizar' : 'Guardar'}
             table="vehiculos"
             isHidden={['id']}
             isRequired={['nombre_usuario', 'contraseña', 'tipo_usuario']}
             colsWidth={{
-              numero_interno: 'col-span-12 sm:col-span-4',
-              patente: 'col-span-12 sm:col-span-4',
-              marca: 'col-span-12 sm:col-span-4',
-              modelo: 'col-span-12 sm:col-span-4',
+              numero_interno: 'col-span-12 sm:col-span-6',
+              patente: 'col-span-12 sm:col-span-6',
+              marca: 'col-span-12 sm:col-span-6',
+              modelo: 'col-span-12 sm:col-span-6',
             }}
             names={{
               numero_interno: 'N° Interno',

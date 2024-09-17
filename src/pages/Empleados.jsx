@@ -1,20 +1,22 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AutoForm, Button, Modal, runCode, runCodeStruc, Table } from "tamnora-react";
+import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc } from "tamnora-react";
 
 
 export function Empleados() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState(null);
+  const [dataStruc, setDataStruc] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [alertData, setAlertData] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [idSelected, setIdSelected] = useState(0);
 
   const getData = async () => {
-    await runCode('-st usuarios WHERE tipo_usuario = "empleado"').then(res => {
-      setTableData(res)
+    await runCodeStruc('-st usuarios WHERE tipo_usuario = 0', 'usuarios').then(res => {
+      setTableData(res.data)
+      setDataStruc(res.struc.types)
     })
   };
 
@@ -27,9 +29,64 @@ export function Empleados() {
   function closeModal() {
     setIsModalOpen(false)
   }
-  function updateData(e) {
-    console.log(e)
+
+  async function updateData(e) {
+    await dbSelect(e.query.tipo, e.query.sql).then((res) => {
+      if (res[0].resp == '1') {
+        closeModal();
+        setShowAlert(true);
+        setAlertData({
+          icon: true,
+          type: 'success',
+          title: 'Proceso Finalizado',
+          message: 'Se guardó correctamente',
+        });
+      } else {
+        closeModal();
+        setShowAlert(true);
+        setAlertData({
+          icon: true,
+          type: 'danger',
+          title: 'Proceso Interrumpido',
+          message: 'Parece que hubo un error al actualizar',
+        });
+      }
+    });
   }
+
+
+  const deleteData = async () => {
+    try {
+      const tipo = 'd';
+      const sql = `DELETE FROM usuarios WHERE id = ${idSelected}`;
+
+      await dbSelect(tipo, sql).then(val => {
+        getData();
+        setIdSelected(0)
+        setIsModalOpen(!isModalOpen);
+        setShowAlert(true)
+        setAlertData({
+          icon: true,
+          type: 'success',
+          title: 'Proceso Finalizado',
+          message: `Se ha BORRADO al cliente Nro ${idSelected}`
+        })
+        // console.log(val)
+      })
+    } catch (err) {
+      closeModal()
+      setShowAlert(true)
+      setAlertData({
+        icon: true,
+        type: 'danger',
+        title: 'Hubo un error!',
+        message: err.message
+      })
+    } finally {
+      // setLoading(false);
+    }
+  };
+
 
   const verCliente = async (rowData) => {
     setFormData(null);
@@ -40,6 +97,7 @@ export function Empleados() {
   };
   const nuevoCliente = () => {
     setFormData({
+      id: 0,
       nombre_usuario: '',
       contraseña: '',
       tipo_usuario: 'empleado'
@@ -50,6 +108,18 @@ export function Empleados() {
 
   return (
     <>
+      {showAlert && (
+        <Alert
+          icon={alertData.icon}
+          type={alertData.type}
+          title={alertData.title}
+          message={alertData.message}
+          timeOff={4000}
+          position="top-right"
+          onClose={() => setShowAlert(false)}
+        />
+      )}
+
       <section className="flex flex-col mb-20">
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-2">
@@ -62,7 +132,15 @@ export function Empleados() {
             Nuevo
           </Button>
         </div>
-        <Table columnNames={{ nombre_usuario: 'nombre', tipo_usuario: 'tipo' }} data={tableData} onRowClick={verCliente} />
+        <AutoTable renderCell={(data) => {
+          if (data.column == 'tipo_usuario') {
+            if (data.value == 0) {
+              return 'Empleado'
+            }
+          } else {
+            return data.value
+          }
+        }} columnNames={{ nombre_usuario: 'nombre', tipo_usuario: 'tipo' }} data={tableData} onRowClick={verCliente} />
       </section>
       {
         formData &&
@@ -76,7 +154,9 @@ export function Empleados() {
           <AutoForm
             data={formData}
             onSubmit={updateData}
+            onDelete={deleteData}
             primaryKey="id"
+            struc={dataStruc}
             idSelected={idSelected}
             textSubmit={idSelected > 0 ? 'Actualizar' : 'Guardar'}
             table="usuarios"
@@ -84,7 +164,7 @@ export function Empleados() {
             isRequired={['nombre_usuario', 'contraseña', 'tipo_usuario']}
             colsWidth={{ nombre_usuario: 'col-span-12 sm:col-span-4', contraseña: 'col-span-12 sm:col-span-4', tipo_usuario: 'col-span-12 sm:col-span-4' }}
             names={{ nombre_usuario: 'Nombre y apellido', contraseña: 'Contraseña', tipo_usuario: 'Tipo de usuario' }}
-            types={{ tipo_usuario: { type: 'select', options: [{ value: 'empleado', label: 'Empleado' }, { value: 'administrador', label: 'Administrador' }] } }}
+            types={{ tipo_usuario: { type: 'select', options: [{ value: 0, label: 'Empleado' }, { value: 1, label: 'Administrador' }] } }}
           />
         </Modal>
       }

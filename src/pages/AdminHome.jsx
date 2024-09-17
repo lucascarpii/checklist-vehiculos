@@ -27,7 +27,7 @@ export function AdminHome() {
           </Tooltip>
         </div>
       </section>
-      <section className="grid md:grid-cols-2 gap-4 mt-10">
+      <section className="grid md:grid-cols-2 gap-2 mt-10">
         <Link to="/empleados" className="flex items-center gap-2 active:scale-95 bg-zinc-100 hover:bg-zinc-200 border-2 text-zinc-700 dark:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
           <UserGroupIcon className="size-5" />
           <span className="-mb-0.5">
