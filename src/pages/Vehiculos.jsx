@@ -51,7 +51,7 @@ export function Vehiculos() {
     });
     setIdSelected(0)
     setIsModalOpen(true)
-  };
+  };g
 
   return (
     <>
