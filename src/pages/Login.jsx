@@ -19,9 +19,8 @@ function Login() {
 
   const validarUsuario = async (thePass) => {
     try {
-      const val = await runCode(`-sl user_id, user_name, user_surname, user_role -fr users -wr user_pass = '${thePass}'`);
+      const val = await runCode(`-sl id, nombre_usuario, tipo_usuario -fr usuarios -wr contraseña = '${thePass}'`);
       const user = val[0];
-
       if (user.resp == 'error') return { response: false, msg: user.msgError }
       if (user.ninguno) return { response: false, msg: 'La contraseña no es válida' }
 
@@ -34,15 +33,15 @@ function Login() {
   };
 
   const login = async (e) => {
-    // e.preventDefault();
-    // setLoading(true);
-    // const resp = await validarUsuario(password);
-    // if (resp.response) {
-    //   auth.login(resp.user);
-    // } else {
-    //   setMsg(resp.msg);
-    // }
-    auth.login(password);
+    e.preventDefault();
+    setLoading(true);
+    const resp = await validarUsuario(password);
+    console.log(resp)
+    if (resp.response) {
+      auth.login(resp.user);
+    } else {
+      setMsg('No hay usuario registrado con esa contraseña.');
+    }
     setLoading(false);
   };
 

@@ -14,7 +14,7 @@ export function Empleados() {
   const [idSelected, setIdSelected] = useState(0);
 
   const getData = async () => {
-    await runCodeStruc('-st usuarios WHERE tipo_usuario = 0', 'usuarios').then(res => {
+    await runCodeStruc('-st usuarios', 'usuarios').then(res => {
       setTableData(res.data)
       setDataStruc(res.struc.types)
     })
@@ -31,27 +31,61 @@ export function Empleados() {
   }
 
   async function updateData(e) {
-    await dbSelect(e.query.tipo, e.query.sql).then((res) => {
-      if (res[0].resp == '1') {
-        closeModal();
-        setShowAlert(true);
-        setAlertData({
-          icon: true,
-          type: 'success',
-          title: 'Proceso Finalizado',
-          message: 'Se guardó correctamente',
-        });
-      } else {
-        closeModal();
-        setShowAlert(true);
-        setAlertData({
-          icon: true,
-          type: 'danger',
-          title: 'Proceso Interrumpido',
-          message: 'Parece que hubo un error al actualizar',
+    try {
+      const tipo = e.query.tipo;
+      const sql = e.query.sql;
+      let habilitePass = true;
+
+      await runCode(`-sl id, nombre_usuario -fr usuarios -wr contraseña = ${e.formData.contraseña}`).then(res => {
+        if (res.length > 0) {
+          if (res[0].id != idSelected) {
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'danger',
+              title: 'Error',
+              message: `El usuario ${res[0].nombre_usuario} tiene esta contraseña asignada.`,
+            });
+            habilitePass = false;
+          }
+        } else {
+          console.log('prosiga nomas')
+        }
+
+      })
+      if (habilitePass) {
+        await dbSelect(tipo, sql).then((res) => {
+          if (res[0].resp == '1') {
+            closeModal();
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'success',
+              title: 'Proceso Finalizado',
+              message: 'Se guardó correctamente',
+            });
+          } else {
+            closeModal();
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'danger',
+              title: 'Proceso Interrumpido',
+              message: 'Parece que hubo un error al actualizar',
+            });
+          }
         });
       }
-    });
+    } catch (error) {
+      closeModal()
+      setShowAlert(true);
+      setAlertData({
+        icon: true,
+        type: 'danger',
+        title: 'Error',
+        message: error.message,
+      });
+    }
   }
 
 
@@ -100,7 +134,7 @@ export function Empleados() {
       id: 0,
       nombre_usuario: '',
       contraseña: '',
-      tipo_usuario: 'empleado'
+      tipo_usuario: 0
     });
     setIdSelected(0)
     setIsModalOpen(true)
@@ -109,24 +143,24 @@ export function Empleados() {
   return (
     <>
       {showAlert && (
-        <Alert
-          icon={alertData.icon}
-          type={alertData.type}
-          title={alertData.title}
-          message={alertData.message}
-          timeOff={4000}
-          position="top-right"
-          onClose={() => setShowAlert(false)}
-        />
+          <Alert
+            icon={alertData.icon}
+            type={alertData.type}
+            title={alertData.title}
+            message={alertData.message}
+            timeOff={2000}
+            position="top-right"
+            onClose={() => setShowAlert(false)}
+          />
       )}
 
       <section className="flex flex-col mb-20">
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-2">
-            <Link to="/admin" className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
+            <Link to="/" className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
               <ArrowLeftIcon className="size-4" />
             </Link>
-            <h2 className="text-xl">Empleados</h2>
+            <h2 className="text-xl">Usuarios</h2>
           </div>
           <Button color="green" onClick={nuevoCliente}>
             Nuevo
@@ -136,6 +170,8 @@ export function Empleados() {
           if (data.column == 'tipo_usuario') {
             if (data.value == 0) {
               return 'Empleado'
+            } else{
+              return 'Administrador'
             }
           } else {
             return data.value

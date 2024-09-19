@@ -5,7 +5,7 @@ import { useAuth } from "../utils/auth"
 import { Link } from "react-router-dom"
 
 export function AdminHome() {
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   return (
     <>
       <section className="flex justify-between">
@@ -13,7 +13,7 @@ export function AdminHome() {
           <h1 className="text-xl font-medium">Checklist semanal</h1>
           <p className="text-sm text-zinc-400 flex items-center gap-1 leading-3">
             <span className="size-2 rounded-full bg-green-500"></span>
-            Gonzalo Valenzuela
+            {user.nombre_usuario}
           </p>
         </div>
         <div className="inline-flex gap-2">
@@ -31,7 +31,7 @@ export function AdminHome() {
         <Link to="/empleados" className="flex items-center gap-2 active:scale-95 bg-zinc-100 hover:bg-zinc-200 border-2 text-zinc-700 dark:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
           <UserGroupIcon className="size-5" />
           <span className="-mb-0.5">
-            Administrar empleados
+            Administrar usuarios
           </span>
         </Link>
         <Link to="/vehiculos" className="flex items-center gap-2 active:scale-95 bg-zinc-100 hover:bg-zinc-200 border-2 text-zinc-700 dark:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 transition-all duration-300 rounded-xl p-4">

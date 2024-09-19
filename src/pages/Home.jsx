@@ -143,7 +143,7 @@ export function Home() {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState(initialFormData); // Inicializa formData
 
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
 
   // Define una función para actualizar formData de forma declarativa
   const handleChange = (section, field, value) => {
@@ -594,7 +594,10 @@ export function Home() {
       <section className="flex justify-between">
         <div>
           <h1 className="text-xl font-medium">Checklist semanal</h1>
-          <p className="text-sm text-zinc-400 flex items-center gap-1 leading-3"><span className="size-2 rounded-full bg-green-500"></span> Gonzalo Valenzuela</p>
+          <p className="text-sm text-zinc-400 flex items-center gap-1 leading-3">
+            <span className="size-2 rounded-full bg-green-500"></span>
+            {user.nombre_usuario}
+          </p>
         </div>
         <div className="inline-flex gap-2">
           <Tooltip content="Tema" placement="bottom">

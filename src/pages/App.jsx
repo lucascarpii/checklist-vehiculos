@@ -28,17 +28,19 @@ const AppRoutes = () => {
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
 
+  const HomePage = () => {
+    if (user.tipo_usuario === 0) {
+      return <Home />
+    } else {
+      return <AdminHome />
+    }
+  }
+
   let routesConfig = [
     {
       path: '/', element:
         <AuthRoute>
-          <Home />
-        </AuthRoute>
-    },
-    {
-      path: '/admin', element:
-        <AuthRoute>
-          <AdminHome />
+          <HomePage />
         </AuthRoute>
     },
     {

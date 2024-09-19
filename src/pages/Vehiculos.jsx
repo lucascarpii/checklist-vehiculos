@@ -58,7 +58,7 @@ export function Vehiculos() {
       <section className="flex flex-col mb-20">
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-2">
-            <Link to="/admin" className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
+            <Link to="/" className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
               <ArrowLeftIcon className="size-4" />
             </Link>
             <h2 className="text-xl">Vehiculo</h2>
