@@ -24,8 +24,6 @@ export function Empleados() {
     getData();
   }, [isModalOpen]);
 
-  useEffect(() => { window.scrollTo(0, 0) }, []);
-
   function closeModal() {
     setIsModalOpen(false)
   }

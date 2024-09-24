@@ -1,40 +1,40 @@
 import React, { useState } from "react"
-import { ArrowRightStartOnRectangleIcon, TruckIcon, UserGroupIcon } from "@heroicons/react/24/outline"
+import { ArrowRightStartOnRectangleIcon, InboxArrowDownIcon, TruckIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { DarkModeBtn } from "../components/DarkModeBtn"
 import { useAuth } from "../utils/auth"
 import { Tooltip } from "tamnora-react"
 import { Empleados } from "./Empleados"
 import { Vehiculos } from "./Vehiculos"
+import { Asignaciones } from "./Asignaciones"
 
 const Tabs = ({ children }) => {
   const [activeTab, setActiveTab] = useState(0); // Estado para el tab activo
 
   return (
     <div className="">
-      <div className="flex rounded-xl w-fit bg-zinc-100 dark:bg-zinc-800 p-1">
+      <div className="flex rounded-xl justify-between w-fit bg-zinc-100 dark:bg-zinc-800 p-1">
         {React.Children.map(children, (child, index) => (
           <button
             key={index}
-            onClick={() => setActiveTab(index)} // Manejar clics en la pestaña
-            className={`flex items-center px-3 py-2 text-sm font-medium ${index === activeTab
+            onClick={() => setActiveTab(index)}
+            className={`flex items-center px-3 py-2 text-xs sm:text-sm font-medium ${index === activeTab
               ? "bg-white shadow-sm dark:bg-zinc-700"
               : "text-zinc-500 dark:text-zinc-400"
               } rounded-lg transition duration-300 ease-in-out`}
           >
-            {child.props.icon && <span className="mr-2">{child.props.icon}</span>}
+            {child.props.icon && <span className="hidden sm:block mr-2">{child.props.icon}</span>}
             {child.props.label}
           </button>
         ))}
       </div>
-      <div className="mt-6 p-1">
-        {/* Mostrar el contenido del tab activo */}
+      <div className="mt-4 sm:mt-6 sm:p-1">
         {React.Children.toArray(children)[activeTab]}
       </div>
     </div>
   );
 };
 
-const Tab = ({ label, icon, children }) => (
+const Tab = ({ children }) => (
   <div>
     {children}
   </div>
@@ -70,8 +70,8 @@ export function AdminHome() {
           <Tab label="Vehículos" icon={<TruckIcon className="size-5" />} >
             <Vehiculos />
           </Tab>
-          <Tab label="Asignaciones" icon={<ArrowRightStartOnRectangleIcon className="size-5" />} >
-            <h1>Asignaciones</h1>
+          <Tab label="Asignaciones" icon={<InboxArrowDownIcon className="size-5" />} >
+            <Asignaciones />
           </Tab>
         </Tabs>
       </section>

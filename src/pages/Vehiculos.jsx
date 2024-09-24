@@ -1,6 +1,4 @@
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc } from "tamnora-react";
 
 
@@ -24,7 +22,6 @@ export function Vehiculos() {
     getData();
   }, [isModalOpen]);
 
-  useEffect(() => { window.scrollTo(0, 0) }, []);
 
   function closeModal() {
     setIsModalOpen(false)
@@ -122,7 +119,10 @@ export function Vehiculos() {
           onClose={() => setShowAlert(false)}
         />
       )}
-      <section className="">
+      <section className="flex flex-col gap-4 relative">
+         <Button addClassNames="sm:!absolute sm:-top-[71px] sm:!right-0">
+          Agregar
+         </Button>
         <AutoTable columnNames={{ numero_interno: 'N° Interno' }} data={tableData} onRowClick={verVehiculo} />
       </section>
       {
