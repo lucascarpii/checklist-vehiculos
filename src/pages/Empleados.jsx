@@ -49,7 +49,6 @@ export function Empleados() {
             habilitePass = false;
           }
         } else {
-          console.log('prosiga nomas')
         }
 
       })
@@ -93,7 +92,7 @@ export function Empleados() {
     try {
       const tipo = 'd';
       const sql = `DELETE FROM usuarios WHERE id = ${idSelected}`;
-
+      
       await dbSelect(tipo, sql).then(val => {
         getData();
         setIdSelected(0)
@@ -105,7 +104,6 @@ export function Empleados() {
           title: 'Proceso Finalizado',
           message: `Se ha BORRADO al cliente Nro ${idSelected}`
         })
-        // console.log(val)
       })
     } catch (err) {
       closeModal()
@@ -143,15 +141,15 @@ export function Empleados() {
   return (
     <>
       {showAlert && (
-          <Alert
-            icon={alertData.icon}
-            type={alertData.type}
-            title={alertData.title}
-            message={alertData.message}
-            timeOff={2000}
-            position="top-right"
-            onClose={() => setShowAlert(false)}
-          />
+        <Alert
+          icon={alertData.icon}
+          type={alertData.type}
+          title={alertData.title}
+          message={alertData.message}
+          timeOff={2000}
+          position="top-right"
+          onClose={() => setShowAlert(false)}
+        />
       )}
 
       <section className="flex flex-col mb-20">
@@ -170,7 +168,7 @@ export function Empleados() {
           if (data.column == 'tipo_usuario') {
             if (data.value == 0) {
               return 'Empleado'
-            } else{
+            } else {
               return 'Administrador'
             }
           } else {

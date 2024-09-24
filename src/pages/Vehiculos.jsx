@@ -1,7 +1,7 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AutoForm, Button, Modal, runCode, runCodeStruc, Table } from "tamnora-react";
+import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc } from "tamnora-react";
 
 
 export function Vehiculos() {
@@ -17,7 +17,6 @@ export function Vehiculos() {
     await runCodeStruc('-st vehiculos', 'vehiculos').then(res => {
       setTableData(res.data)
       setDataStruc(res.struc.types)
-      console.log(dataStruc)
     })
   };
 
@@ -30,17 +29,74 @@ export function Vehiculos() {
   function closeModal() {
     setIsModalOpen(false)
   }
-  function updateData(e) {
-    console.log(e)
+  async function updateData(e) {
+    try {
+      const tipo = e.query.tipo;
+      const sql = e.query.sql;
+      let habilitePass = true;
+
+      await runCode(`-sl id, patente -fr vehiculos -wr patente = ${e.formData.patente}`).then(res => {
+       
+        if (res.length > 1) {
+          if (res[0].id != idSelected) {
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'danger',
+              title: 'Error',
+              message: `La patente ${res[0].patente} ya esta registrada.`,
+            });
+            habilitePass = false;
+          }
+        } else {
+        }
+
+      })
+      if (habilitePass) {
+        await dbSelect(tipo, sql).then((res) => {
+          if (res[0].resp == '1') {
+            closeModal();
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'success',
+              title: 'Proceso Finalizado',
+              message: 'Se guardó correctamente',
+            });
+          } else {
+            console.error(tipo, sql)
+            closeModal();
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'danger',
+              title: 'Proceso Interrumpido',
+              message: 'Parece que hubo un error al actualizar',
+            });
+          }
+        });
+      }
+    } catch (error) {
+      closeModal()
+      setShowAlert(true);
+      setAlertData({
+        icon: true,
+        type: 'danger',
+        title: 'Error',
+        message: error.message,
+      });
+    }
   }
 
   const verVehiculo = async (rowData) => {
     setFormData(null);
     const res = await runCode(`-st vehiculos -wr id = ${rowData.id}`);
     setFormData(res[0]);
+    console.log(res[0])
     setIdSelected(res[0].id)
     setIsModalOpen(true)
   };
+
   const nuevoVehiculo = () => {
     setFormData({
       id: 0,
@@ -51,10 +107,21 @@ export function Vehiculos() {
     });
     setIdSelected(0)
     setIsModalOpen(true)
-  };g
+  };
 
   return (
     <>
+      {showAlert && (
+        <Alert
+          icon={alertData.icon}
+          type={alertData.type}
+          title={alertData.title}
+          message={alertData.message}
+          timeOff={2000}
+          position="top-right"
+          onClose={() => setShowAlert(false)}
+        />
+      )}
       <section className="flex flex-col mb-20">
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-2">
@@ -67,7 +134,7 @@ export function Vehiculos() {
             Nuevo
           </Button>
         </div>
-        <Table columnNames={{ numero_interno: 'N° Interno' }} data={tableData} onRowClick={verVehiculo} />
+        <AutoTable columnNames={{ numero_interno: 'N° Interno' }} data={tableData} onRowClick={verVehiculo} />
       </section>
       {
         formData &&
@@ -87,7 +154,7 @@ export function Vehiculos() {
             textSubmit={idSelected > 0 ? 'Actualizar' : 'Guardar'}
             table="vehiculos"
             isHidden={['id']}
-            isRequired={['nombre_usuario', 'contraseña', 'tipo_usuario']}
+            isRequired={['numero_interno','patente']}
             colsWidth={{
               numero_interno: 'col-span-12 sm:col-span-6',
               patente: 'col-span-12 sm:col-span-6',

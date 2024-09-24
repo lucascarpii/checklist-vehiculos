@@ -156,6 +156,85 @@ export function Home() {
     }));
   };
 
+  function enviarChecklist() {
+    const sql = `
+      INSERT INTO checklists (
+        fecha, 
+        usuario_id, 
+        vehiculo_id, 
+        kilometraje, 
+        estado_cubierta_delantera_izquierda, 
+        estado_cubierta_delantera_derecha, 
+        estado_cubierta_trasera_izquierda, 
+        estado_cubierta_trasera_derecha, 
+        estado_cubierta_auxilio, 
+        observacion_cubiertas,
+        nivel_aceite, 
+        nivel_agua, 
+        nivel_frenos, 
+        observacion_niveles, 
+        estado_parabrisas, 
+        estado_espejos_laterales, 
+        estado_ventanas, 
+        observacion_vidrios, 
+        extintor_precinto, 
+        extintor_carga, 
+        extintor_fecha_vencimiento, 
+        observacion_extintor, 
+        vtv, 
+        poliza, 
+        tarjeta_verde, 
+        observacion_documentos, 
+        estado_amortiguadores, 
+        estado_frenos_direccion, 
+        estado_direccion, 
+        observacion_frenos_direccion, 
+        estado_general_limpieza, 
+        estado_tablero, 
+        estado_tapizados, 
+        observacion_limpieza
+      ) VALUES (
+        CURDATE(), 
+        ${user.id}, 
+        'OBJ680', 
+        ${formData.datosGenerales.kilometraje}, 
+        ${formData.estadoCubiertas.delanteraIzquierda}, 
+        ${formData.estadoCubiertas.delanteraDerecha}, 
+        ${formData.estadoCubiertas.traseraIzquierda}, 
+        ${formData.estadoCubiertas.traseraDerecha}, 
+        ${formData.estadoCubiertas.ruedaAuxilio}, 
+        '${formData.estadoCubiertas.observacion}', 
+        ${formData.niveles.aceite}, 
+        ${formData.niveles.agua}, 
+        ${formData.niveles.frenos}, 
+        '${formData.niveles.observacion}', 
+        ${formData.vidrios.parabrisas}, 
+        ${formData.vidrios.espejosLaterales}, 
+        ${formData.vidrios.ventanas}, 
+        '${formData.vidrios.observacion}', 
+        ${formData.extintor.precinto}, 
+        ${formData.extintor.carga}, 
+        ${formData.extintor.fechaVencimiento}, 
+        '${formData.extintor.observacion}', 
+        ${formData.documentos.vtv}, 
+        ${formData.documentos.poliza}, 
+        ${formData.documentos.tarjetaVerde}, 
+        '${formData.documentos.observacion}', 
+        ${formData.frenosDireccion.amortiguadores}, 
+        ${formData.frenosDireccion.frenos}, 
+        ${formData.frenosDireccion.direccion}, 
+        '${formData.frenosDireccion.observacion}', 
+        ${formData.limpieza.estadoGeneral}, 
+        ${formData.limpieza.tablero}, 
+        ${formData.limpieza.tapizados}, 
+        '${formData.limpieza.observacion}'
+      );
+    `;
+
+    console.log(sql);
+    closeModal()
+  }
+
   // Define una función para cerrar el modal y resetear formData y step
   function closeModal() {
     setFormData(initialFormData); // Resetea formData al inicial
@@ -166,38 +245,17 @@ export function Home() {
   // useEffect para inicializar datos
   useEffect(() => {
     setVehiculos([
-      {
-        id: 2,
-        marca: 'Ford',
-        modelo: 'Ranger',
-        patente: 'XYZ789',
-        realizado: false,
-        ultimoKm: '479807',
-      }
+      // {
+      //   id: 2,
+      //   marca: 'Ford',
+      //   modelo: 'Ranger',
+      //   patente: 'XYZ789',
+      //   realizado: false,
+      //   ultimoKm: '479807',
+      // }
     ]);
 
-    setHistorial([
-      {
-        id: 1,
-        empleado: 'Juan Martinez',
-        marca: 'Toyota',
-        modelo: 'Hilux',
-        patente: 'ABC123',
-        realizado: false,
-        ultimoKm: '479807',
-        ultimoChecklist: '2023-08-07'
-      },
-      {
-        id: 2,
-        empleado: 'Gonzalo Valenzuela',
-        marca: 'Ford',
-        modelo: 'Ranger',
-        patente: 'XYZ789',
-        realizado: true,
-        ultimoKm: '479807',
-        ultimoChecklist: '2023-08-14'
-      }
-    ]);
+    setHistorial([]);
   }, []);
 
   // Define una función para renderizar el formulario de cada paso
@@ -568,6 +626,7 @@ export function Home() {
     setSubtitle(subtitles[step] || '');
   }, [step]);
 
+
   // Define las funciones para controlar los pasos del formulario
   const nextStep = () => {
     if (step === 1 && formData.datosGenerales.kilometraje == "") {
@@ -700,7 +759,7 @@ export function Home() {
             Siguiente
           </Button>
           {step === 9 ?
-            <Button>Enviar checklist</Button>
+            <Button onClick={enviarChecklist}>Enviar checklist</Button>
             :
             <Button addClassNames="!ring-0" color="green" onClick={lastStep}>
               Ir al final <ClipboardDocumentCheckIcon className="size-4 ml-2" />
