@@ -152,18 +152,7 @@ export function Empleados() {
         />
       )}
 
-      <section className="flex flex-col mb-20">
-        <div className="flex justify-between items-start mb-6">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
-              <ArrowLeftIcon className="size-4" />
-            </Link>
-            <h2 className="text-xl">Usuarios</h2>
-          </div>
-          <Button color="green" onClick={nuevoCliente}>
-            Nuevo
-          </Button>
-        </div>
+      <section className="">
         <AutoTable renderCell={(data) => {
           if (data.column == 'tipo_usuario') {
             if (data.value == 0) {

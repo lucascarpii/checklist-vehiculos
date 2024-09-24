@@ -36,7 +36,7 @@ export function Vehiculos() {
       let habilitePass = true;
 
       await runCode(`-sl id, patente -fr vehiculos -wr patente = ${e.formData.patente}`).then(res => {
-       
+
         if (res.length > 1) {
           if (res[0].id != idSelected) {
             setShowAlert(true);
@@ -122,18 +122,7 @@ export function Vehiculos() {
           onClose={() => setShowAlert(false)}
         />
       )}
-      <section className="flex flex-col mb-20">
-        <div className="flex justify-between items-start mb-6">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-full">
-              <ArrowLeftIcon className="size-4" />
-            </Link>
-            <h2 className="text-xl">Vehiculo</h2>
-          </div>
-          <Button color="green" onClick={nuevoVehiculo}>
-            Nuevo
-          </Button>
-        </div>
+      <section className="">
         <AutoTable columnNames={{ numero_interno: 'N° Interno' }} data={tableData} onRowClick={verVehiculo} />
       </section>
       {
@@ -154,7 +143,7 @@ export function Vehiculos() {
             textSubmit={idSelected > 0 ? 'Actualizar' : 'Guardar'}
             table="vehiculos"
             isHidden={['id']}
-            isRequired={['numero_interno','patente']}
+            isRequired={['numero_interno', 'patente']}
             colsWidth={{
               numero_interno: 'col-span-12 sm:col-span-6',
               patente: 'col-span-12 sm:col-span-6',

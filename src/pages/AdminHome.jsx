@@ -1,9 +1,44 @@
+import React, { useState } from "react"
 import { ArrowRightStartOnRectangleIcon, TruckIcon, UserGroupIcon } from "@heroicons/react/24/outline"
-import { structure, Tooltip } from "tamnora-react"
 import { DarkModeBtn } from "../components/DarkModeBtn"
 import { useAuth } from "../utils/auth"
-import { Link } from "react-router-dom"
+import { Tooltip } from "tamnora-react"
+import { Empleados } from "./Empleados"
+import { Vehiculos } from "./Vehiculos"
 
+const Tabs = ({ children }) => {
+  const [activeTab, setActiveTab] = useState(0); // Estado para el tab activo
+
+  return (
+    <div className="">
+      <div className="flex rounded-xl w-fit bg-zinc-100 dark:bg-zinc-800 p-1">
+        {React.Children.map(children, (child, index) => (
+          <button
+            key={index}
+            onClick={() => setActiveTab(index)} // Manejar clics en la pestaña
+            className={`flex items-center px-3 py-2 text-sm font-medium ${index === activeTab
+              ? "bg-white shadow-sm dark:bg-zinc-700"
+              : "text-zinc-500 dark:text-zinc-400"
+              } rounded-lg transition duration-300 ease-in-out`}
+          >
+            {child.props.icon && <span className="mr-2">{child.props.icon}</span>}
+            {child.props.label}
+          </button>
+        ))}
+      </div>
+      <div className="mt-6 p-1">
+        {/* Mostrar el contenido del tab activo */}
+        {React.Children.toArray(children)[activeTab]}
+      </div>
+    </div>
+  );
+};
+
+const Tab = ({ label, icon, children }) => (
+  <div>
+    {children}
+  </div>
+);
 export function AdminHome() {
   const { logout, user } = useAuth()
   return (
@@ -27,19 +62,18 @@ export function AdminHome() {
           </Tooltip>
         </div>
       </section>
-      <section className="grid md:grid-cols-2 gap-2 mt-10">
-        <Link to="/empleados" className="flex items-center gap-2 active:scale-95 bg-zinc-100 hover:bg-zinc-200 border-2 text-zinc-700 dark:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
-          <UserGroupIcon className="size-5" />
-          <span className="-mb-0.5">
-            Administrar usuarios
-          </span>
-        </Link>
-        <Link to="/vehiculos" className="flex items-center gap-2 active:scale-95 bg-zinc-100 hover:bg-zinc-200 border-2 text-zinc-700 dark:text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
-          <TruckIcon className="size-5" />
-          <span className="-mb-0.5">
-            Administrar vehiculos
-          </span>
-        </Link>
+      <section className="mt-10">
+        <Tabs>
+          <Tab label="Usuarios" icon={<UserGroupIcon className="size-5" />} >
+            <Empleados />
+          </Tab>
+          <Tab label="Vehículos" icon={<TruckIcon className="size-5" />} >
+            <Vehiculos />
+          </Tab>
+          <Tab label="Asignaciones" icon={<ArrowRightStartOnRectangleIcon className="size-5" />} >
+            <h1>Asignaciones</h1>
+          </Tab>
+        </Tabs>
       </section>
     </>
   )
