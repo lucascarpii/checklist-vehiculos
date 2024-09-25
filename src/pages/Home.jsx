@@ -1,6 +1,6 @@
 import { ArrowRightStartOnRectangleIcon, CheckIcon, ClipboardDocumentCheckIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Card } from "../components/Card";
-import { Button, Input, Modal, Select, Textarea, Tooltip } from "tamnora-react";
+import { Button, dbSelect, formatDate, Input, Modal, Select, Textarea, Tooltip } from "tamnora-react";
 import { useState, useEffect } from "react";
 import { DarkModeBtn } from "../components/DarkModeBtn";
 import { useAuth } from "../utils/auth";
@@ -139,11 +139,34 @@ export function Home() {
   const [historial, setHistorial] = useState([]);
   const [subtitle, setSubtitle] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [vehiculoSelected, setVehiculoSelected] = useState('');
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState(initialFormData); // Inicializa formData
 
-  const { logout, user } = useAuth()
+  const { logout, user } = useAuth();
+
+  const getData = async () => {
+    const query = `
+      SELECT v.*
+      FROM vehiculos v
+      JOIN empleados_vehiculos ev ON v.id = ev.vehiculo_id
+      JOIN usuarios u ON ev.empleado_id = u.id
+      WHERE u.id = ${user.id};
+    `;
+
+    await dbSelect('s', query, [user.id])
+      .then(res => {
+        setVehiculos(res)
+      })
+      .catch(err => {
+        console.error("Error fetching data: ", err);
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, [isModalOpen]);
 
   // Define una función para actualizar formData de forma declarativa
   const handleChange = (section, field, value) => {
@@ -194,9 +217,9 @@ export function Home() {
         estado_tapizados, 
         observacion_limpieza
       ) VALUES (
-        CURDATE(), 
+        '${formatDate(new Date()).fecha}', 
         ${user.id}, 
-        'OBJ680', 
+        ${vehiculoSelected.id}, 
         ${formData.datosGenerales.kilometraje}, 
         ${formData.estadoCubiertas.delanteraIzquierda}, 
         ${formData.estadoCubiertas.delanteraDerecha}, 
@@ -242,30 +265,14 @@ export function Home() {
     setIsModalOpen(false);
   }
 
-  // useEffect para inicializar datos
-  useEffect(() => {
-    setVehiculos([
-      // {
-      //   id: 2,
-      //   marca: 'Ford',
-      //   modelo: 'Ranger',
-      //   patente: 'XYZ789',
-      //   realizado: false,
-      //   ultimoKm: '479807',
-      // }
-    ]);
-
-    setHistorial([]);
-  }, []);
-
   // Define una función para renderizar el formulario de cada paso
   function renderForm() {
     if (step === 1) {
       return (
         <form action="" className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
-            <Input isReadOnly label="Patente" defaultValue="OBJ680" variant="faded" />
-            <Input isReadOnly label="Fecha" defaultValue="04/08/2024" variant="faded" />
+            <Input isReadOnly label="Patente" defaultValue={vehiculoSelected.patente} variant="faded" />
+            <Input isReadOnly label="Fecha" defaultValue={formatDate(new Date(), '/').fechaEs} variant="faded" />
           </div>
           <div className="grid grid-cols-1 gap-3 mt-3">
             <Input
@@ -419,7 +426,7 @@ export function Home() {
               label="Fecha de Vencimiento"
               options={extintorFechaVencimientoOptions} />
           </div>
-          <div>
+          <div className="mt-3">
             <Textarea
               defaultValue={formData.extintor.observacion}
               onChange={(e) => handleChange('extintor', 'observacion', e.target.value)}
@@ -448,7 +455,7 @@ export function Home() {
               variant="faded"
               label="Tarjeta Verde" options={documentosOptions} />
           </div>
-          <div>
+          <div className="mt-3">
             <Textarea
               defaultValue={formData.documentos.observacion}
               onChange={(e) => handleChange('documentos', 'observacion', e.target.value)}
@@ -684,8 +691,10 @@ export function Home() {
                       modelo={vehiculo.modelo}
                       realizado={vehiculo.realizado}
                       patente={vehiculo.patente}
-                      km={vehiculo.ultimoKm}
-                      handleClick={() => setIsModalOpen(true)}
+                      handleClick={() => {
+                        setVehiculoSelected(vehiculo)
+                        setIsModalOpen(true)
+                      }}
                     />
                   )
                 })}

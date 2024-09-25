@@ -2,7 +2,6 @@ export function Card({
   marca = "",
   modelo = "",
   realizado = false,
-  km = "",
   patente = "",
   handleClick = () => { }
 }) {
@@ -29,7 +28,6 @@ export function Card({
           <p className={`max-w-max px-2 rounded-full text-center font-medium text-sm ${estado.color}`}>
             {estado.label}
           </p>
-          <p className="text-sm font-medium text-zinc-400 dark:text-zinc-600">{km} km</p>
         </div>
       </div>
     </div>
