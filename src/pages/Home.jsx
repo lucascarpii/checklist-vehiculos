@@ -1,6 +1,6 @@
 import { ArrowRightStartOnRectangleIcon, CheckIcon, ClipboardDocumentCheckIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Card } from "../components/Card";
-import { Button, dbSelect, formatDate, Input, Modal, Select, Textarea, Tooltip } from "tamnora-react";
+import { Button, dbSelect, formatDate, Input, Modal, runCode, Select, Textarea, Tooltip } from "tamnora-react";
 import { useState, useEffect } from "react";
 import { DarkModeBtn } from "../components/DarkModeBtn";
 import { useAuth } from "../utils/auth";
@@ -142,12 +142,13 @@ export function Home() {
   const [vehiculoSelected, setVehiculoSelected] = useState('');
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
+  const [users, setUsers] = useState({})
   const [formData, setFormData] = useState(initialFormData); // Inicializa formData
 
   const { logout, user } = useAuth();
 
   const getData = async () => {
-    const query = `
+    const queryVehiculos = `
       SELECT v.*
       FROM vehiculos v
       JOIN empleados_vehiculos ev ON v.id = ev.vehiculo_id
@@ -155,13 +156,39 @@ export function Home() {
       WHERE u.id = ${user.id};
     `;
 
-    await dbSelect('s', query, [user.id])
+    const queryChecklists = `
+      SELECT c.*, v.marca, v.modelo
+      FROM checklists c
+      JOIN vehiculos v ON c.vehiculo_id = v.id
+      JOIN empleados_vehiculos ev ON v.id = ev.vehiculo_id
+      JOIN usuarios u ON ev.empleado_id = u.id
+      WHERE u.id = ${user.id};
+    `
+     await runCode('-st usuarios').then(res => {
+      let obj = {}
+      res.forEach(user => {
+        obj[user.id] = user.nombre_usuario
+      })
+      setUsers(obj)
+     })
+
+    await dbSelect('s', queryVehiculos)
       .then(res => {
         setVehiculos(res)
       })
       .catch(err => {
         console.error("Error fetching data: ", err);
       });
+
+    await dbSelect('s', queryChecklists)
+      .then(res => {
+        console.log(res)
+        setHistorial(res)
+      })
+      .catch(err => {
+        console.error("Error fetching data: ", err);
+      });
+
   };
 
   useEffect(() => {
@@ -254,7 +281,7 @@ export function Home() {
       );
     `;
 
-    console.log(sql);
+    dbSelect('i', sql).then(res => console.log(res))
     closeModal()
   }
 
@@ -269,7 +296,7 @@ export function Home() {
   function renderForm() {
     if (step === 1) {
       return (
-        <form action="" className="min-h-[144px]">
+        <section className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
             <Input isReadOnly label="Patente" defaultValue={vehiculoSelected.patente} variant="faded" />
             <Input isReadOnly label="Fecha" defaultValue={formatDate(new Date(), '/').fechaEs} variant="faded" />
@@ -285,13 +312,13 @@ export function Home() {
               isRequired
             />
           </div>
-        </form>
+        </section>
       );
     }
 
     if (step === 2) {
       return (
-        <form action="" className="min-h-[144px]">
+        <section className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.estadoCubiertas.delanteraIzquierda}
@@ -332,13 +359,13 @@ export function Home() {
               onChange={(e) => handleChange('estadoCubiertas', 'observacion', e.target.value)}
               placeholder="Ingresar detalles extra de las cubiertas en caso de ser necesario." />
           </div>
-        </form>
+        </section>
       );
     }
 
     if (step === 3) {
       return (
-        <form action="" className="min-h-[144px]">
+        <section className="min-h-[144px]">
           <div className="grid sm:grid-cols-3 gap-3">
             <Select
               defaultValue={formData.niveles.aceite}
@@ -367,13 +394,13 @@ export function Home() {
               label="Observaciones"
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
-        </form>
+        </section>
       );
     }
 
     if (step === 4) {
       return (
-        <form action="" className="min-h-[144px]">
+        <section className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.vidrios.parabrisas}
@@ -402,31 +429,31 @@ export function Home() {
               label="Observaciones"
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
-        </form>
+        </section>
       );
     }
 
     if (step === 5) {
       return (
-        <form className="min-h-[144px]" action="">
-          <div className="grid sm:grid-cols-3 gap-3">
-            <Select
-              defaultValue={formData.extintor.carga}
-              variant="faded"
-              label="Carga"
-              options={extintorCargaOptions} />
-            <Select
-              defaultValue={formData.extintor.precinto}
-              variant="faded"
-              label="Precinto"
-              options={extintorPrecintoOptions} />
-            <Select
-              defaultValue={formData.extintor.fechaVencimiento}
-              variant="faded"
-              label="Fecha de Vencimiento"
-              options={extintorFechaVencimientoOptions} />
-          </div>
-          <div className="mt-3">
+        <section className="min-h-[144px] grid sm:grid-cols-3 gap-3">
+
+          <Select
+            defaultValue={formData.extintor.carga}
+            variant="faded"
+            label="Carga"
+            options={extintorCargaOptions} />
+          <Select
+            defaultValue={formData.extintor.precinto}
+            variant="faded"
+            label="Precinto"
+            options={extintorPrecintoOptions} />
+          <Select
+            defaultValue={formData.extintor.fechaVencimiento}
+            variant="faded"
+            label="Fecha de Vencimiento"
+            options={extintorFechaVencimientoOptions} />
+
+          <div className="sm:col-span-3">
             <Textarea
               defaultValue={formData.extintor.observacion}
               onChange={(e) => handleChange('extintor', 'observacion', e.target.value)}
@@ -434,13 +461,13 @@ export function Home() {
               label="Observaciones"
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
-        </form>
+        </section>
       );
     }
 
     if (step === 6) {
       return (
-        <form action="" className="min-h-[144px]">
+        <section className="min-h-[144px]">
           <div className="grid sm:grid-cols-3 gap-3">
             <Select
               defaultValue={formData.documentos.vtv}
@@ -463,13 +490,13 @@ export function Home() {
               label="Observaciones"
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
-        </form>
+        </section>
       );
     }
 
     if (step === 7) {
       return (
-        <form action="" className="min-h-[144px]">
+        <section className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.frenosDireccion.amortiguadores}
@@ -495,13 +522,13 @@ export function Home() {
               label="Observaciones"
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
-        </form>
+        </section>
       );
     }
 
     if (step === 8) {
       return (
-        <form action="" className="min-h-[144px]">
+        <section className="min-h-[144px]">
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.limpieza.estadoGeneral}
@@ -527,7 +554,7 @@ export function Home() {
               label="Observaciones"
               placeholder="Ingresar detalles en caso de ser necesario." />
           </div>
-        </form>
+        </section>
       );
     }
 
@@ -710,10 +737,10 @@ export function Home() {
                       <li key={item.id} className="flex rounded-lg justify-between items-center py-3 px-4 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all duration-200">
                         <div className="flex flex-col">
                           <h3 className="text-md font-medium">{item.marca} {item.modelo}</h3>
-                          <p className="text-sm text-zinc-400">{item.empleado}</p>
+                          <p className="text-sm text-zinc-400">{users[item.usuario_id]}</p>
                         </div>
                         <div className="flex-col text-right">
-                          <p className="text-sm text-zinc-400">{item.ultimoChecklist}</p>
+                          <p className="text-sm text-zinc-400">{item.fecha}</p>
                         </div>
                       </li>
                     )
