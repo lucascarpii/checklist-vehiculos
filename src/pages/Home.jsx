@@ -164,13 +164,13 @@ export function Home() {
       JOIN usuarios u ON ev.empleado_id = u.id
       WHERE u.id = ${user.id};
     `
-     await runCode('-st usuarios').then(res => {
+    await runCode('-st usuarios').then(res => {
       let obj = {}
       res.forEach(user => {
         obj[user.id] = user.nombre_usuario
       })
       setUsers(obj)
-     })
+    })
 
     await dbSelect('s', queryVehiculos)
       .then(res => {
@@ -182,7 +182,6 @@ export function Home() {
 
     await dbSelect('s', queryChecklists)
       .then(res => {
-        console.log(res)
         setHistorial(res)
       })
       .catch(err => {
@@ -195,7 +194,26 @@ export function Home() {
     getData();
   }, [isModalOpen]);
 
-  // Define una función para actualizar formData de forma declarativa
+  function isSameWeek(dateToCompare) {
+    const today = new Date();
+    const currentWeek = getWeek(today);
+    const compareWeek = getWeek(dateToCompare);
+
+    return currentWeek === compareWeek;
+  }
+
+
+  function getWeek(date) {
+    const dateCopy = new Date(date);
+    dateCopy.setDate(dateCopy.getDate() - ((dateCopy.getDay() + 6) % 7));
+    const firstDayOfYear = new Date(dateCopy.getFullYear(), 0, 1);
+    const difference = dateCopy.getTime() - firstDayOfYear.getTime();
+    const days = Math.round(difference / (1000 * 60 * 60 * 24));
+    const weekNumber = Math.ceil((days + firstDayOfYear.getDay()) / 7);
+    return weekNumber;
+  }
+
+
   const handleChange = (section, field, value) => {
     setFormData(prevState => ({
       ...prevState,
@@ -705,25 +723,47 @@ export function Home() {
       </section>
 
       <section className="mt-8 grid gap-4">
-        {vehiculos.length > 0 ?
+        {vehiculos.length > 0 && historial.length > 0 ?
           <>
             <div>
               <h2 className="text-md mb-3">{vehiculos.length > 1 ? 'Vehículos asignados' : 'Vehículo asignado'}</h2>
               <div className="grid grid-cols-[repeat(auto-fill,_minmax(18rem,_1fr))] gap-y-2 sm:gap-y-3 md:gap-y-5 gap-x-3">
                 {vehiculos.map((vehiculo) => {
-                  return (
-                    <Card
-                      key={vehiculo.id}
-                      marca={vehiculo.marca}
-                      modelo={vehiculo.modelo}
-                      realizado={vehiculo.realizado}
-                      patente={vehiculo.patente}
-                      handleClick={() => {
-                        setVehiculoSelected(vehiculo)
-                        setIsModalOpen(true)
-                      }}
-                    />
-                  )
+
+                  let ultimoChecklist = historial.find(checklist => checklist.vehiculo_id === vehiculo.id)
+
+                  const dateToCompare = new Date(ultimoChecklist.fecha);
+                  const isSameWeekResult = isSameWeek(dateToCompare);
+
+                  if (isSameWeekResult) {
+                    return (
+                      <Card
+                        key={vehiculo.id}
+                        marca={vehiculo.marca}
+                        modelo={vehiculo.modelo}
+                        realizado={true}
+                        patente={vehiculo.patente}
+                        handleClick={() => {
+                          setVehiculoSelected(vehiculo)
+                          setIsModalOpen(true)
+                        }}
+                      />
+                    )
+                  } else {
+                    return (
+                      <Card
+                        key={vehiculo.id}
+                        marca={vehiculo.marca}
+                        modelo={vehiculo.modelo}
+                        realizado={false}
+                        patente={vehiculo.patente}
+                        handleClick={() => {
+                          setVehiculoSelected(vehiculo)
+                          setIsModalOpen(true)
+                        }}
+                      />
+                    )
+                  }
                 })}
               </div>
             </div>
