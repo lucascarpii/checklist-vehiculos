@@ -39,6 +39,8 @@ const initialFormData = {
   documentos: {
     vtv: 2,
     poliza: 2,
+    carnet: 2,
+    manejoDefensivo: 2,
     tarjetaVerde: 2,
     observacion: '',
   },
@@ -500,6 +502,16 @@ export function Home() {
               variant="faded"
               label="Tarjeta Verde" options={documentosOptions} />
           </div>
+          <div className="grid sm:grid-cols-2 gap-3 mt-3">
+            <Select
+              defaultValue={formData.documentos.carnet}
+              variant="faded"
+              label="Carnet de Conducir" options={documentosOptions} />
+            <Select
+              defaultValue={formData.documentos.manejoDefensivo}
+              variant="faded"
+              label="Manejo Defensivo" options={documentosOptions} />
+          </div>
           <div className="mt-3">
             <Textarea
               defaultValue={formData.documentos.observacion}
@@ -633,6 +645,8 @@ export function Home() {
               <li>VTV: {formData.documentos.vtv}</li>
               <li>Póliza de Seguro: {formData.documentos.poliza}</li>
               <li>Tarjeta Verde: {formData.documentos.tarjetaVerde}</li>
+              <li>Carnet: {formData.documentos.carnet}</li>
+              <li>Manejo defensivo: {formData.documentos.manejoDefensivo}</li>
               <li>Observaciones: {formData.documentos.observacion}</li>
             </ul>
           </div>
@@ -732,7 +746,7 @@ export function Home() {
 
                   let ultimoChecklist = historial.find(checklist => checklist.vehiculo_id === vehiculo.id)
 
-                  const dateToCompare = new Date(ultimoChecklist.fecha);
+                  const dateToCompare = new Date(ultimoChecklist?.fecha);
                   const isSameWeekResult = isSameWeek(dateToCompare);
 
                   if (isSameWeekResult) {
@@ -780,7 +794,7 @@ export function Home() {
                           <p className="text-sm text-zinc-400">{users[item.usuario_id]}</p>
                         </div>
                         <div className="flex-col text-right">
-                          <p className="text-sm text-zinc-400">{item.fecha}</p>
+                          <p className="text-sm text-zinc-400">{item?.fecha}</p>
                         </div>
                       </li>
                     )
@@ -842,6 +856,11 @@ export function Home() {
             </Button>
           }
         </footer>
+      </Modal>
+
+      {/* Este modal debe mostrarse cuando seleccionamos desde el historial o desde una card realizada. */}
+      <Modal>
+        <h1>resumen checklist seleccionado</h1>
       </Modal>
     </>
   )

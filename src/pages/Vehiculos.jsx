@@ -120,7 +120,7 @@ export function Vehiculos() {
         />
       )}
       <section className="flex flex-col gap-4 relative">
-         <Button addClassNames="sm:!absolute sm:-top-[71px] sm:!right-0">
+         <Button onClick={nuevoVehiculo} addClassNames="sm:!absolute sm:-top-[71px] sm:!right-0">
           Agregar
          </Button>
         <AutoTable columnNames={{ numero_interno: 'N° Interno' }} data={tableData} onRowClick={verVehiculo} />
