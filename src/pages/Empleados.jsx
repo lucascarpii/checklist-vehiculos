@@ -90,7 +90,7 @@ export function Empleados() {
     try {
       const tipo = 'd';
       const sql = `DELETE FROM usuarios WHERE id = ${idSelected}`;
-      
+
       await dbSelect(tipo, sql).then(val => {
         getData();
         setIdSelected(0)
@@ -118,14 +118,14 @@ export function Empleados() {
   };
 
 
-  const verCliente = async (rowData) => {
+  const verUsuario = async (rowData) => {
     setFormData(null);
     const res = await runCode(`-st usuarios -wr id = ${rowData.id}`);
     setFormData(res[0]);
     setIdSelected(res[0].id)
     setIsModalOpen(true)
   };
-  const nuevoCliente = () => {
+  const nuevoUsuario = () => {
     setFormData({
       id: 0,
       nombre_usuario: '',
@@ -150,8 +150,8 @@ export function Empleados() {
         />
       )}
 
-      <section className="">
-        <AutoTable renderCell={(data) => {
+      <section className="flex flex-col gap-4 relative">
+        <AutoTable showRowSelection={false} renderCell={(data) => {
           if (data.column == 'tipo_usuario') {
             if (data.value == 0) {
               return 'Empleado'
@@ -161,7 +161,10 @@ export function Empleados() {
           } else {
             return data.value
           }
-        }} columnNames={{ nombre_usuario: 'nombre', tipo_usuario: 'tipo' }} data={tableData} onRowClick={verCliente} />
+        }} columnNames={{ nombre_usuario: 'nombre', tipo_usuario: 'tipo' }} data={tableData} onRowClick={verUsuario} />
+        <Button color="sky" onClick={nuevoUsuario} addClassNames="sm:!absolute sm:-top-[71px] sm:!right-0">
+          Agregar
+        </Button>
       </section>
       {
         formData &&

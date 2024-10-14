@@ -118,7 +118,7 @@ export function Asignaciones() {
             Crear asignación
           </Button>
         </div>
-        <AutoTable data={tableData} struc={dataStruc} renderCell={renderCell} columnNames={{empleado_id: 'Empleado', vehiculo_id: 'Vehículo'}} />
+        <AutoTable showRowSelection={false} data={tableData} struc={dataStruc} renderCell={renderCell} columnNames={{empleado_id: 'Empleado', vehiculo_id: 'Vehículo'}} />
       </section>
     </>
   )
