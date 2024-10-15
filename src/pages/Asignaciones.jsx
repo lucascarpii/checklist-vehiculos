@@ -114,7 +114,7 @@ export function Asignaciones() {
             options={vehiculosList}
             onChange={(e) => setVehiculoSelected(e)}
           />
-          <Button onClick={crearAsignacion} color="sky">
+          <Button onClick={crearAsignacion} color="green">
             Crear asignación
           </Button>
         </div>

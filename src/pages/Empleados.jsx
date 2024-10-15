@@ -149,7 +149,7 @@ export function Empleados() {
       )}
 
       <section className="flex flex-col gap-4 relative">
-        <Button color="sky" onClick={nuevoUsuario} addClassNames="xs:!absolute xs:-top-[56px] sm:-top-[71px] xs:!right-0">
+        <Button color="green" onClick={nuevoUsuario} addClassNames="xs:!absolute xs:-top-[56px] sm:-top-[71px] xs:!right-0">
           Agregar
         </Button>
         <AutoTable showRowSelection={false} renderCell={(data) => {

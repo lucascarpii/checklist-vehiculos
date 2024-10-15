@@ -809,7 +809,7 @@ export function Home() {
             </div>
             {historial.length > 8 &&
               <div className="flex flex-col max-w-64 mx-auto">
-                <Button variant="faded" color="sky">
+                <Button variant="faded" color="green">
                   Ver historial completo
                 </Button>
               </div>
