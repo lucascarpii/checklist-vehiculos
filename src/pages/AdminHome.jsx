@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ArchiveBoxIcon, ArrowRightStartOnRectangleIcon, InboxArrowDownIcon, TruckIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { DarkModeBtn } from "../components/DarkModeBtn"
 import { useAuth } from "../utils/auth"
@@ -42,6 +42,10 @@ const Tab = ({ children }) => (
 );
 export function AdminHome() {
   const { logout, user } = useAuth()
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <section className="flex justify-between">

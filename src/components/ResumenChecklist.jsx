@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   estadoCubiertasOptions,
   nivelesOptions,
@@ -14,6 +15,10 @@ import {
 } from "../utils/valores";
 
 export function ResumenChecklist({ formData = {} }) {
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="grid gap-y-4 divide-y-2 dark:divide-zinc-800">
       {/* Estado de Cubiertas */}

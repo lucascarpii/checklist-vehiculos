@@ -23,7 +23,11 @@ export function Checklists() {
 
   useEffect(() => {
     getData();
-  }, [isModalOpen]);
+  }, [isModalOpen])
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   function closeModal() {
     setIsModalOpen(false)

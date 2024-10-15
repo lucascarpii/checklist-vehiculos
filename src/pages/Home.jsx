@@ -149,6 +149,11 @@ export function Home() {
 
   const { logout, user } = useAuth();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+
   const getData = async () => {
     const queryVehiculos = `
       SELECT v.*
