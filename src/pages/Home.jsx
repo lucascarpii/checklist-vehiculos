@@ -4,6 +4,7 @@ import { Button, dbSelect, formatDate, Input, Modal, runCode, Select, Textarea, 
 import { useState, useEffect } from "react";
 import { DarkModeBtn } from "../components/DarkModeBtn";
 import { useAuth } from "../utils/auth";
+import { ResumenChecklistModal } from "../components/ResumenChecklistModal";
 
 // Define los datos base del formulario como un objeto independiente
 const initialFormData = {
@@ -152,7 +153,6 @@ export function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
 
   const getData = async () => {
     const queryVehiculos = `
@@ -464,16 +464,19 @@ export function Home() {
 
           <Select
             defaultValue={formData.extintor.carga}
+            onChange={(e) => handleChange('extintor', 'carga', e.target.value)}
             variant="faded"
             label="Carga"
             options={extintorCargaOptions} />
           <Select
             defaultValue={formData.extintor.precinto}
+            onChange={(e) => handleChange('extintor', 'precinto', e.target.value)}
             variant="faded"
             label="Precinto"
             options={extintorPrecintoOptions} />
           <Select
             defaultValue={formData.extintor.fechaVencimiento}
+            onChange={(e) => handleChange('extintor', 'fechaVencimiento', e.target.value)}
             variant="faded"
             label="Fecha de Vencimiento"
             options={extintorFechaVencimientoOptions} />
@@ -496,24 +499,29 @@ export function Home() {
           <div className="grid sm:grid-cols-3 gap-3">
             <Select
               defaultValue={formData.documentos.vtv}
+              onChange={(e) => handleChange('documentos', 'vtv', e.target.value)}
               variant="faded"
               label="VTV" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.poliza}
+              onChange={(e) => handleChange('documentos', 'poliza', e.target.value)}
               variant="faded"
               label="Póliza de Seguro" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.tarjetaVerde}
+              onChange={(e) => handleChange('documentos', 'tarjetaVerde', e.target.value)}
               variant="faded"
               label="Tarjeta Verde" options={documentosOptions} />
           </div>
           <div className="grid sm:grid-cols-2 gap-3 mt-3">
             <Select
               defaultValue={formData.documentos.carnet}
+              onChange={(e) => handleChange('documentos', 'carnet', e.target.value)}
               variant="faded"
               label="Carnet de Conducir" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.manejoDefensivo}
+              onChange={(e) => handleChange('documentos', 'manejoDefensivo', e.target.value)}
               variant="faded"
               label="Manejo Defensivo" options={documentosOptions} />
           </div>
@@ -535,11 +543,13 @@ export function Home() {
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.frenosDireccion.amortiguadores}
+              onChange={(e) => handleChange('frenosDireccion', 'amortiguadores', e.target.value)}
               variant="faded"
               label="Amortiguadores"
               options={amortiguadoresFrenosOptions} />
             <Select
               defaultValue={formData.frenosDireccion.frenos}
+              onChange={(e) => handleChange('frenosDireccion', 'frenos', e.target.value)}
               variant="faded"
               label="Frenos"
               options={amortiguadoresFrenosOptions} />
@@ -547,6 +557,7 @@ export function Home() {
           <div className="grid gap-3 mt-3">
             <Select
               defaultValue={formData.frenosDireccion.direccion}
+              onChange={(e) => handleChange('frenosDireccion', 'direccion', e.target.value)}
               variant="faded"
               label="Dirección"
               options={direccionOptions} />
@@ -567,11 +578,13 @@ export function Home() {
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.limpieza.estadoGeneral}
+              onChange={(e) => handleChange('limpieza', 'estadoGeneral', e.target.value)}
               variant="faded"
               label="Estado General"
               options={estadoGeneralOptions} />
             <Select
               defaultValue={formData.limpieza.tablero}
+              onChange={(e) => handleChange('limpieza', 'tablero', e.target.value)}
               variant="faded"
               label="Tablero de Instrumentos"
               options={tableroTapizadosOptions} />
@@ -579,6 +592,7 @@ export function Home() {
           <div className="grid gap-3 mt-3">
             <Select
               defaultValue={formData.limpieza.tapizados}
+              onChange={(e) => handleChange('limpieza', 'tapizados', e.target.value)}
               variant="faded"
               label="Tapizados"
               options={tableroTapizadosOptions} />
@@ -595,86 +609,8 @@ export function Home() {
 
     if (step === 9) {
       return (
-        <div className="max-h-dvh sm:max-h-80 overflow-y-auto grid grid-cols-2">
-          <div className="col-span-2">
-            <h2>Resumen del Checklist</h2>
-            <p className="text-sm text-zinc-500">Kilometraje: {formData.datosGenerales.kilometraje}</p>
-          </div>
-
-          <div>
-            <h3 className="">Estado de Cubiertas</h3>
-            <ul className="break-words text-sm text-zinc-500">
-              <li>Delantera Izquierda: {formData.estadoCubiertas.delanteraIzquierda}</li>
-              <li>Delantera Derecha: {formData.estadoCubiertas.delanteraDerecha}</li>
-              <li>Trasera Izquierda: {formData.estadoCubiertas.traseraIzquierda}</li>
-              <li>Trasera Derecha: {formData.estadoCubiertas.traseraDerecha}</li>
-              <li>Rueda de auxilio: {formData.estadoCubiertas.ruedaAuxilio}</li>
-              <li>Observaciones: {formData.estadoCubiertas.observacion}</li>
-            </ul>
-
-          </div>
-
-          <div>
-            <h3 className="">Verificación de Fluidos</h3>
-            <ul className="break-words text-sm text-zinc-500">
-              <li>Aceite: {formData.niveles.aceite}</li>
-              <li>Agua: {formData.niveles.agua}</li>
-              <li>Líquido de frenos: {formData.niveles.frenos}</li>
-              <li>Observaciones: {formData.niveles.observacion}</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="">Vidrios y Parabrisas</h3>
-            <ul className="break-words text-sm text-zinc-500">
-              <li>Parabrisas: {formData.vidrios.parabrisas}</li>
-              <li>Espejos Laterales: {formData.vidrios.espejosLaterales}</li>
-              <li>Ventanas: {formData.vidrios.ventanas}</li>
-              <li>Observaciones: {formData.vidrios.observacion}</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="">Extintor</h3>
-            <ul className="break-words text-sm text-zinc-500">
-              <li>Precinto: {formData.extintor.precinto}</li>
-              <li>Carga: {formData.extintor.carga}</li>
-              <li>Fecha de Vencimiento: {formData.extintor.fechaVencimiento}</li>
-              <li>Observaciones: {formData.extintor.observacion}</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="">Documentos Legales</h3>
-            <ul className="break-words text-sm text-zinc-500">
-              <li>VTV: {formData.documentos.vtv}</li>
-              <li>Póliza de Seguro: {formData.documentos.poliza}</li>
-              <li>Tarjeta Verde: {formData.documentos.tarjetaVerde}</li>
-              <li>Carnet: {formData.documentos.carnet}</li>
-              <li>Manejo defensivo: {formData.documentos.manejoDefensivo}</li>
-              <li>Observaciones: {formData.documentos.observacion}</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="">Frenos. Dirección</h3>
-            <ul className="break-words text-sm text-zinc-500">
-              <li>Amortiguadores: {formData.frenosDireccion.amortiguadores}</li>
-              <li>Frenos: {formData.frenosDireccion.frenos}</li>
-              <li>Dirección: {formData.frenosDireccion.direccion}</li>
-              <li>Observaciones: {formData.frenosDireccion.observacion}</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="">Limpieza del Habitáculo</h3>
-            <ul className="break-words text-sm text-zinc-500">
-              <li>Estado General: {formData.limpieza.estadoGeneral}</li>
-              <li>Tablero de Instrumentos: {formData.limpieza.tablero}</li>
-              <li>Tapizados: {formData.limpieza.tapizados}</li>
-              <li>Observaciones: {formData.limpieza.observacion}</li>
-            </ul>
-          </div>
+        <div className="max-h-dvh sm:max-h-80 overflow-y-auto grid">
+          <ResumenChecklistModal formData={formData} />
         </div>
       );
     }
@@ -691,7 +627,7 @@ export function Home() {
       6: 'Documentos Legales',
       7: 'Frenos. Dirección',
       8: 'Limpieza del Habitáculo',
-      9: 'Veificar datos',
+      9: 'Resumen del Checklist',
     };
 
     setSubtitle(subtitles[step] || '');
@@ -841,6 +777,7 @@ export function Home() {
             }
           </p>
         }
+        subtitle={step === 9 && `Kilometraje actual - ${formData.datosGenerales.kilometraje} km`}
         isOpen={isModalOpen}
         handleModal={closeModal} size="3xl"
       >
@@ -861,11 +798,6 @@ export function Home() {
             </Button>
           }
         </footer>
-      </Modal>
-
-      {/* Este modal debe mostrarse cuando seleccionamos desde el historial o desde una card realizada. */}
-      <Modal>
-        <h1>resumen checklist seleccionado</h1>
       </Modal>
     </>
   )

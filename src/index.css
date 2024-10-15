@@ -19,3 +19,22 @@ input:-webkit-autofill:focus {
 .dark input:-webkit-autofill {
   -webkit-text-fill-color: white;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #e4e4e7;
+}
+.dark ::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #27272a;
+}
