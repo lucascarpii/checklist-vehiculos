@@ -1,11 +1,12 @@
 import React, { useState } from "react"
-import { ArrowRightStartOnRectangleIcon, InboxArrowDownIcon, TruckIcon, UserGroupIcon } from "@heroicons/react/24/outline"
+import { ArchiveBoxIcon, ArrowRightStartOnRectangleIcon, InboxArrowDownIcon, TruckIcon, UserGroupIcon } from "@heroicons/react/24/outline"
 import { DarkModeBtn } from "../components/DarkModeBtn"
 import { useAuth } from "../utils/auth"
 import { Tooltip } from "tamnora-react"
 import { Empleados } from "./Empleados"
 import { Vehiculos } from "./Vehiculos"
 import { Asignaciones } from "./Asignaciones"
+import { Link } from "react-router-dom"
 
 const Tabs = ({ children }) => {
   const [activeTab, setActiveTab] = useState(0); // Estado para el tab activo
@@ -52,6 +53,11 @@ export function AdminHome() {
           </p>
         </div>
         <div className="inline-flex gap-2">
+          <Tooltip content="Checklists" placement="bottom">
+            <Link to="/checklists" className="hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-200 h-10 w-10 flex items-center justify-center rounded-full">
+              <ArchiveBoxIcon className="size-6" />
+            </Link>
+          </Tooltip>
           <Tooltip content="Tema" placement="bottom">
             <DarkModeBtn />
           </Tooltip>

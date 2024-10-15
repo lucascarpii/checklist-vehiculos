@@ -14,6 +14,7 @@ import { Layout } from '../Components/Layout';
 import { AdminHome } from "./AdminHome.jsx";
 import { Empleados } from "./Empleados.jsx";
 import { Vehiculos } from "./Vehiculos.jsx";
+import { Checklists } from "./Checklists.jsx";
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -36,6 +37,13 @@ const AppRoutes = () => {
     }
   }
 
+  const ChecklistsAdmin = () => {
+    if (user.tipo_usuario === 0) {
+      return
+    } else {
+      return <Checklists />
+    }
+  }
   let routesConfig = [
     {
       path: '/', element:
@@ -53,6 +61,12 @@ const AppRoutes = () => {
       path: '/vehiculos', element:
         <AuthRoute>
           <Vehiculos />
+        </AuthRoute>
+    },
+    {
+      path: '/checklists', element:
+        <AuthRoute>
+          <ChecklistsAdmin />
         </AuthRoute>
     },
     { path: '/login', element: <Login /> },

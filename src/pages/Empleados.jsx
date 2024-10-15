@@ -1,6 +1,4 @@
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc } from "tamnora-react";
 
 
@@ -151,6 +149,9 @@ export function Empleados() {
       )}
 
       <section className="flex flex-col gap-4 relative">
+        <Button color="sky" onClick={nuevoUsuario} addClassNames="xs:!absolute xs:-top-[56px] sm:-top-[71px] xs:!right-0">
+          Agregar
+        </Button>
         <AutoTable showRowSelection={false} renderCell={(data) => {
           if (data.column == 'tipo_usuario') {
             if (data.value == 0) {
@@ -162,9 +163,6 @@ export function Empleados() {
             return data.value
           }
         }} columnNames={{ nombre_usuario: 'nombre', tipo_usuario: 'tipo' }} data={tableData} onRowClick={verUsuario} />
-        <Button color="sky" onClick={nuevoUsuario} addClassNames="sm:!absolute sm:-top-[71px] sm:!right-0">
-          Agregar
-        </Button>
       </section>
       {
         formData &&
