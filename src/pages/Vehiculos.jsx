@@ -142,6 +142,7 @@ export function Vehiculos() {
             table="vehiculos"
             isHidden={['id']}
             isRequired={['numero_interno', 'patente']}
+            isUpperCase={['patente', 'marca', 'modelo']}
             colsWidth={{
               numero_interno: 'col-span-12 sm:col-span-6',
               patente: 'col-span-12 sm:col-span-6',
