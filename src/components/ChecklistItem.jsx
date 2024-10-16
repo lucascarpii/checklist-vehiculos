@@ -1,25 +1,22 @@
 import { CalendarDateRangeIcon } from "@heroicons/react/20/solid";
 import { formatDate } from "tamnora-react";
 
-export function ChecklistItem({ id, marca, modelo, usuario, fecha, buttonOnClick = () => { } }) {
+export function ChecklistItem({ id, vehiculo, usuario, fecha, buttonOnClick = () => { } }) {
   return (
-    <li className="relative grid grid-cols-2 gap-4 py-6 sm:grid-cols-4 lg:grid-cols-[60px_1fr_1fr_1fr_120px]">
-      <div className="col-span-2 content-center sm:col-span-4 lg:col-span-1">
-        <a href="#" className="text-base font-semibold text-zinc-900 hover:underline dark:text-zinc-200"># {id}</a>
+    <li className="relative grid grid-cols-2 gap-4 py-4 sm:grid-cols-4">
+      <div className="content-center flex flex-col">
+        <span className="text-base font-medium text-zinc-900 dark:text-zinc-300">{vehiculo.marca} {vehiculo.modelo}</span>
+        <p className="text-xs font-medium text-zinc-500">{usuario}</p>
       </div>
 
       <div className="content-center">
-        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{usuario}</p>
-      </div>
-
-      <div className="content-center">
-        <div className="flex items-center justify-end gap-2 sm:justify-start">
+        <div className="flex items-center justify-end gap-2 sm:justify-center ">
           <CalendarDateRangeIcon className="size-4" />
           <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{formatDate(fecha, '/').fechaEs}</p>
         </div>
       </div>
 
-      <div className="absolute right-0 top-7 content-center sm:relative sm:right-auto sm:top-auto">
+      <div className="absolute right-0 top-7 content-center sm:relative sm:right-auto sm:top-auto sm:mx-auto">
         <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-500 dark:bg-emerald-500/20">
           Realizado
         </span>

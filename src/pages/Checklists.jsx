@@ -15,7 +15,7 @@ export function Checklists() {
   const [showAlert, setShowAlert] = useState(false);
   const [idSelected, setIdSelected] = useState(0);
   const [users, setUsers] = useState({})
-  const [vehiculos, setVehiculos] = useState([]);
+  const [vehiculos, setVehiculos] = useState({});
 
   const getData = async () => {
     await runCode('-st usuarios').then(res => {
@@ -27,7 +27,14 @@ export function Checklists() {
     })
 
     await runCode('-st vehiculos').then(res => {
-      setVehiculos(res)
+      let obj = {}
+      res.forEach(vehiculo => {
+        obj[vehiculo.id] = {
+          modelo: vehiculo.modelo,
+          marca: vehiculo.marca,
+        }
+      })
+      setVehiculos(obj)
     })
 
     await runCodeStruc('-sl id, fecha, usuario_id, vehiculo_id, kilometraje -fr checklists -ob id DESC', 'checklists').then(res => {
@@ -96,8 +103,7 @@ export function Checklists() {
                   id={data.id}
                   fecha={data.fecha}
                   usuario={users[data.usuario_id]}
-                  marca={data.marca}
-                  modelo={data.modelo}
+                  vehiculo={vehiculos[data.vehiculo_id]}
                   buttonOnClick={() => verChecklist(data.id)}
                 />
               )
