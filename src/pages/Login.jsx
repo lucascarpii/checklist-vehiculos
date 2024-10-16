@@ -36,7 +36,6 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     const resp = await validarUsuario(password);
-    console.log(resp)
     if (resp.response) {
       auth.login(resp.user);
     } else {

@@ -61,7 +61,6 @@ export function Vehiculos() {
               message: 'Se guardó correctamente',
             });
           } else {
-            console.error(tipo, sql)
             closeModal();
             setShowAlert(true);
             setAlertData({
@@ -89,7 +88,6 @@ export function Vehiculos() {
     setFormData(null);
     const res = await runCode(`-st vehiculos -wr id = ${rowData.id}`);
     setFormData(res[0]);
-    console.log(res[0])
     setIdSelected(res[0].id)
     setIsModalOpen(true)
   };

@@ -41,7 +41,6 @@ export function Asignaciones() {
   };
 
   async function crearAsignacion() {
-    console.log(empleadoSelected, vehiculoSelected)
     try {
       const tipo = 'i';
       const sql = `INSERT INTO empleados_vehiculos (empleado_id, vehiculo_id) VALUES (${empleadoSelected}, ${vehiculoSelected})`;

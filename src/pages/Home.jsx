@@ -142,7 +142,6 @@ export function Home() {
     const today = new Date();
     const currentWeek = getWeek(today);
     const compareWeek = getWeek(dateToCompare);
-    console.log(currentWeek === compareWeek)
     return currentWeek === compareWeek;
   }
 
@@ -165,7 +164,6 @@ export function Home() {
         [field]: value,
       }
     }));
-    console.log(formData)
   };
 
   function enviarChecklist() {
