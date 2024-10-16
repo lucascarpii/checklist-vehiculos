@@ -31,21 +31,17 @@ export function Vehiculos() {
       const tipo = e.query.tipo;
       const sql = e.query.sql;
       let habilitePass = true;
-
-      await runCode(`-sl id, patente -fr vehiculos -wr patente = ${e.formData.patente}`).then(res => {
-
-        if (res.length > 1) {
-          if (res[0].id != idSelected) {
-            setShowAlert(true);
-            setAlertData({
-              icon: true,
-              type: 'danger',
-              title: 'Error',
-              message: `La patente ${res[0].patente} ya esta registrada.`,
-            });
-            habilitePass = false;
-          }
-        } else {
+      await runCode(`-sl id, patente -fr vehiculos -wr patente = '${e.formData.patente}'`).then(res => {
+        if (res.length > 0) {
+          closeModal()
+          setShowAlert(true);
+          setAlertData({
+            icon: true,
+            type: 'danger',
+            title: 'Error',
+            message: `La patente ${e.formData.patente} ya esta registrada.`,
+          });
+          habilitePass = false;
         }
 
       })
@@ -141,7 +137,7 @@ export function Vehiculos() {
             textSubmit={idSelected > 0 ? 'Actualizar' : 'Guardar'}
             table="vehiculos"
             isHidden={['id']}
-            isRequired={['numero_interno', 'patente']}
+            isRequired={['numero_interno', 'patente', 'marca', 'modelo']}
             isUpperCase={['patente', 'marca', 'modelo']}
             colsWidth={{
               numero_interno: 'col-span-12 sm:col-span-6',
