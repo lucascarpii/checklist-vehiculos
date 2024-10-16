@@ -6,6 +6,21 @@ import { DarkModeBtn } from "../components/DarkModeBtn";
 import { useAuth } from "../utils/auth";
 import { ResumenChecklistModal } from "../components/ResumenChecklistModal";
 
+import {
+  estadoCubiertasOptions,
+  nivelesOptions,
+  parabrisasOptions,
+  espejosVentanasOptions,
+  extintorPrecintoOptions,
+  extintorCargaOptions,
+  extintorFechaVencimientoOptions,
+  documentosOptions,
+  amortiguadoresFrenosOptions,
+  estadoGeneralOptions,
+  tableroTapizadosOptions,
+  direccionOptions
+} from "../utils/valores"
+
 // Define los datos base del formulario como un objeto independiente
 const initialFormData = {
   datosGenerales: {
@@ -59,84 +74,6 @@ const initialFormData = {
   }
 };
 
-// Define las opciones de los Select como constantes para facilitar la reutilización
-const estadoCubiertasOptions = [
-  { value: 0, label: 'Neumático pinchado' },
-  { value: 1, label: 'Desgaste severo' },
-  { value: 2, label: 'Desgaste leve' },
-  { value: 3, label: 'Buen estado' }
-];
-
-const nivelesOptions = [
-  { value: 0, label: 'Observaciones' },
-  { value: 1, label: 'Fuga' },
-  { value: 2, label: 'Bajo' },
-  { value: 3, label: 'Normal' }
-];
-
-const parabrisasOptions = [
-  { value: 0, label: 'Otros daños' },
-  { value: 1, label: 'Rajado' },
-  { value: 2, label: 'Astillado' },
-  { value: 3, label: 'Sano' }
-];
-
-const espejosVentanasOptions = [
-  { value: 0, label: 'Otros daños' },
-  { value: 1, label: 'Rotura severa' },
-  { value: 2, label: 'Rotura leve' },
-  { value: 3, label: 'Sanos' }
-];
-
-const extintorPrecintoOptions = [
-  { value: 0, label: 'Ausente' },
-  { value: 1, label: 'Roto' },
-  { value: 2, label: 'Intacto' }
-];
-
-const extintorCargaOptions = [
-  { value: 0, label: 'Vacía' },
-  { value: 1, label: 'Incompleta' },
-  { value: 2, label: 'Completa' }
-];
-
-const extintorFechaVencimientoOptions = [
-  { value: 0, label: 'Vencida' },
-  { value: 1, label: 'Vigente' }
-];
-
-const documentosOptions = [
-  { value: 0, label: 'No aplicable' },
-  { value: 1, label: 'Vencida' },
-  { value: 2, label: 'Vigente' }
-];
-
-const amortiguadoresFrenosOptions = [
-  { value: 0, label: 'Requiere cambio' },
-  { value: 1, label: 'Desgaste severo' },
-  { value: 2, label: 'Desgaste leve' },
-  { value: 3, label: 'Buen estado' }
-];
-
-const direccionOptions = [
-  { value: 0, label: 'Otros problemas' },
-  { value: 1, label: 'Juego en dirección' },
-  { value: 2, label: 'Funciona correctamente' }
-];
-
-const estadoGeneralOptions = [
-  { value: 0, label: 'Muy sucio' },
-  { value: 1, label: 'Sucio' },
-  { value: 2, label: 'Limpio' }
-];
-
-const tableroTapizadosOptions = [
-  { value: 0, label: 'Daños' },
-  { value: 1, label: 'Desgaste' },
-  { value: 2, label: 'Sucios' },
-  { value: 3, label: 'Limpios' }
-];
-
 export function Home() {
   const [vehiculos, setVehiculos] = useState([]);
   const [historial, setHistorial] = useState([]);
@@ -169,7 +106,7 @@ export function Home() {
       JOIN vehiculos v ON c.vehiculo_id = v.id
       JOIN empleados_vehiculos ev ON v.id = ev.vehiculo_id
       JOIN usuarios u ON ev.empleado_id = u.id
-      WHERE u.id = ${user.id};
+      WHERE u.id = ${user.id} ORDER BY c.fecha DESC;
     `
     await runCode('-st usuarios').then(res => {
       let obj = {}
@@ -205,10 +142,9 @@ export function Home() {
     const today = new Date();
     const currentWeek = getWeek(today);
     const compareWeek = getWeek(dateToCompare);
-
+    console.log(currentWeek === compareWeek)
     return currentWeek === compareWeek;
   }
-
 
   function getWeek(date) {
     const dateCopy = new Date(date);
@@ -229,6 +165,7 @@ export function Home() {
         [field]: value,
       }
     }));
+    console.log(formData)
   };
 
   function enviarChecklist() {
@@ -464,19 +401,19 @@ export function Home() {
 
           <Select
             defaultValue={formData.extintor.carga}
-            onChange={(e) => handleChange('extintor', 'carga', e.target.value)}
+            onChange={(e) => handleChange('extintor', 'carga', e)}
             variant="faded"
             label="Carga"
             options={extintorCargaOptions} />
           <Select
             defaultValue={formData.extintor.precinto}
-            onChange={(e) => handleChange('extintor', 'precinto', e.target.value)}
+            onChange={(e) => handleChange('extintor', 'precinto', e)}
             variant="faded"
             label="Precinto"
             options={extintorPrecintoOptions} />
           <Select
             defaultValue={formData.extintor.fechaVencimiento}
-            onChange={(e) => handleChange('extintor', 'fechaVencimiento', e.target.value)}
+            onChange={(e) => handleChange('extintor', 'fechaVencimiento', e)}
             variant="faded"
             label="Fecha de Vencimiento"
             options={extintorFechaVencimientoOptions} />
@@ -499,29 +436,29 @@ export function Home() {
           <div className="grid sm:grid-cols-3 gap-3">
             <Select
               defaultValue={formData.documentos.vtv}
-              onChange={(e) => handleChange('documentos', 'vtv', e.target.value)}
+              onChange={(e) => handleChange('documentos', 'vtv', e)}
               variant="faded"
               label="VTV" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.poliza}
-              onChange={(e) => handleChange('documentos', 'poliza', e.target.value)}
+              onChange={(e) => handleChange('documentos', 'poliza', e)}
               variant="faded"
               label="Póliza de Seguro" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.tarjetaVerde}
-              onChange={(e) => handleChange('documentos', 'tarjetaVerde', e.target.value)}
+              onChange={(e) => handleChange('documentos', 'tarjetaVerde', e)}
               variant="faded"
               label="Tarjeta Verde" options={documentosOptions} />
           </div>
           <div className="grid sm:grid-cols-2 gap-3 mt-3">
             <Select
               defaultValue={formData.documentos.carnet}
-              onChange={(e) => handleChange('documentos', 'carnet', e.target.value)}
+              onChange={(e) => handleChange('documentos', 'carnet', e)}
               variant="faded"
               label="Carnet de Conducir" options={documentosOptions} />
             <Select
               defaultValue={formData.documentos.manejoDefensivo}
-              onChange={(e) => handleChange('documentos', 'manejoDefensivo', e.target.value)}
+              onChange={(e) => handleChange('documentos', 'manejoDefensivo', e)}
               variant="faded"
               label="Manejo Defensivo" options={documentosOptions} />
           </div>
@@ -543,13 +480,13 @@ export function Home() {
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.frenosDireccion.amortiguadores}
-              onChange={(e) => handleChange('frenosDireccion', 'amortiguadores', e.target.value)}
+              onChange={(e) => handleChange('frenosDireccion', 'amortiguadores', e)}
               variant="faded"
               label="Amortiguadores"
               options={amortiguadoresFrenosOptions} />
             <Select
               defaultValue={formData.frenosDireccion.frenos}
-              onChange={(e) => handleChange('frenosDireccion', 'frenos', e.target.value)}
+              onChange={(e) => handleChange('frenosDireccion', 'frenos', e)}
               variant="faded"
               label="Frenos"
               options={amortiguadoresFrenosOptions} />
@@ -557,7 +494,7 @@ export function Home() {
           <div className="grid gap-3 mt-3">
             <Select
               defaultValue={formData.frenosDireccion.direccion}
-              onChange={(e) => handleChange('frenosDireccion', 'direccion', e.target.value)}
+              onChange={(e) => handleChange('frenosDireccion', 'direccion', e)}
               variant="faded"
               label="Dirección"
               options={direccionOptions} />
@@ -578,13 +515,13 @@ export function Home() {
           <div className="grid sm:grid-cols-2 gap-3">
             <Select
               defaultValue={formData.limpieza.estadoGeneral}
-              onChange={(e) => handleChange('limpieza', 'estadoGeneral', e.target.value)}
+              onChange={(e) => handleChange('limpieza', 'estadoGeneral', e)}
               variant="faded"
               label="Estado General"
               options={estadoGeneralOptions} />
             <Select
               defaultValue={formData.limpieza.tablero}
-              onChange={(e) => handleChange('limpieza', 'tablero', e.target.value)}
+              onChange={(e) => handleChange('limpieza', 'tablero', e)}
               variant="faded"
               label="Tablero de Instrumentos"
               options={tableroTapizadosOptions} />
@@ -592,7 +529,7 @@ export function Home() {
           <div className="grid gap-3 mt-3">
             <Select
               defaultValue={formData.limpieza.tapizados}
-              onChange={(e) => handleChange('limpieza', 'tapizados', e.target.value)}
+              onChange={(e) => handleChange('limpieza', 'tapizados', e)}
               variant="faded"
               label="Tapizados"
               options={tableroTapizadosOptions} />
