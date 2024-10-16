@@ -615,7 +615,7 @@ export function Home() {
       </section>
 
       <section className="mt-8 grid gap-4">
-        {vehiculos.length > 0 && historial.length > 0 ?
+        {vehiculos.length > 0 ?
           <>
             <div>
               <h2 className="text-md mb-3">{vehiculos.length > 1 ? 'Vehículos asignados' : 'Vehículo asignado'}</h2>
