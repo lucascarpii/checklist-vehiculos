@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc } from "tamnora-react";
 import { ResumenChecklist } from "../components/ResumenChecklist";
 import { ChecklistItem } from "../components/ChecklistItem";
+import { ChecklistItemSkeleton } from "../components/ChecklistItemSkeleton";
 
 
 export function Checklists() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState(null);
   const [dataStruc, setDataStruc] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -41,9 +43,11 @@ export function Checklists() {
       setTableData(res.data)
       setDataStruc(res.struc.types)
     })
+    setLoading(false)
   };
 
   useEffect(() => {
+    setLoading(true)
     getData();
   }, [isModalOpen])
 
@@ -96,7 +100,17 @@ export function Checklists() {
             </div>
           </section>
           <ul className="divide-y dark:divide-zinc-800">
-            {tableData.map((data) => {
+            {loading && (
+              <>
+                <ChecklistItemSkeleton />
+                <ChecklistItemSkeleton />
+                <ChecklistItemSkeleton />
+                <ChecklistItemSkeleton />
+                <ChecklistItemSkeleton />
+              </>
+            )
+            }
+            {!loading && tableData.map((data) => {
               return (
                 <ChecklistItem
                   key={data.id}
@@ -105,6 +119,7 @@ export function Checklists() {
                   usuario={users[data.usuario_id]}
                   vehiculo={vehiculos[data.vehiculo_id]}
                   buttonOnClick={() => verChecklist(data.id)}
+                  loading={loading}
                 />
               )
             })}

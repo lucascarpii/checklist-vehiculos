@@ -2,6 +2,7 @@ import { CalendarDateRangeIcon } from "@heroicons/react/20/solid";
 import { formatDate } from "tamnora-react";
 
 export function ChecklistItem({ id, vehiculo, usuario, fecha, buttonOnClick = () => { } }) {
+
   return (
     <li className="relative grid grid-cols-2 gap-4 py-4 sm:grid-cols-4">
       <div className="content-center flex flex-col">
