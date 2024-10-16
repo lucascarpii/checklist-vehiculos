@@ -41,30 +41,41 @@ export function Asignaciones() {
   };
 
   async function crearAsignacion() {
-    try {
-      const tipo = 'i';
-      const sql = `INSERT INTO empleados_vehiculos (empleado_id, vehiculo_id) VALUES (${empleadoSelected}, ${vehiculoSelected})`;
-
-      await dbSelect(tipo, sql).then(val => {
-        getData()
-        setShowAlert(true)
-        setAlertData({
-          icon: true,
-          type: 'success',
-          title: 'Proceso Finalizado',
-          message: `Se ha creado la asignacion`
-        })
-      })
-    } catch (err) {
+    if (empleadoSelected == 0 || vehiculoSelected == 0) {
       setShowAlert(true)
       setAlertData({
         icon: true,
         type: 'danger',
-        title: 'Hubo un error!',
-        message: err.message
+        title: 'Error',
+        message: `Los campos no pueden estar vacios`
       })
-    } finally {
-      // setLoading(false);
+      return
+    } else {
+      try {
+        const tipo = 'i';
+        const sql = `INSERT INTO empleados_vehiculos (empleado_id, vehiculo_id) VALUES (${empleadoSelected}, ${vehiculoSelected})`;
+
+        await dbSelect(tipo, sql).then(val => {
+          getData()
+          setShowAlert(true)
+          setAlertData({
+            icon: true,
+            type: 'success',
+            title: 'Proceso Finalizado',
+            message: `Se ha creado la asignacion`
+          })
+        })
+      } catch (err) {
+        setShowAlert(true)
+        setAlertData({
+          icon: true,
+          type: 'danger',
+          title: 'Hubo un error!',
+          message: err.message
+        })
+      } finally {
+        // setLoading(false);
+      }
     }
   }
   const renderCell = (data) => {
@@ -117,7 +128,7 @@ export function Asignaciones() {
             Crear asignación
           </Button>
         </div>
-        <AutoTable showRowSelection={false} data={tableData} struc={dataStruc} renderCell={renderCell} columnNames={{empleado_id: 'Empleado', vehiculo_id: 'Vehículo'}} />
+        <AutoTable showRowSelection={false} data={tableData} struc={dataStruc} renderCell={renderCell} columnNames={{ empleado_id: 'Empleado', vehiculo_id: 'Vehículo' }} />
       </section>
     </>
   )
