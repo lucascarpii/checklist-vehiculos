@@ -5,10 +5,11 @@ export function ChecklistItemSkeleton() {
         <div className="bg-zinc-200 dark:bg-zinc-800 rounded-lg h-[16px] w-32"></div>
         <div className="bg-zinc-200 dark:bg-zinc-800 rounded-lg h-[12px] w-24"></div>
       </div>
-      <div className="flex items-center justify-center">
+      <div className="flex flex-col items-end gap-1 sm:items-center sm:justify-center">
         <div className="bg-zinc-200 dark:bg-zinc-800 rounded-lg h-[14px] w-28"></div>
+        <div className="bg-zinc-200 sm:hidden dark:bg-zinc-800 h-[16px] rounded-full w-20"></div>
       </div>
-      <div className="flex items-center justify-center">
+      <div className="hidden sm:flex justify-end items-center sm:justify-center">
         <div className="bg-zinc-200 dark:bg-zinc-800 h-[16px] rounded-full w-20"></div>
       </div>
       <div className="col-span-2 content-center sm:col-span-1 sm:justify-self-end" >

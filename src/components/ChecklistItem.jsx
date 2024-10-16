@@ -10,14 +10,17 @@ export function ChecklistItem({ id, vehiculo, usuario, fecha, buttonOnClick = ()
         <p className="text-xs font-medium text-zinc-500">{usuario}</p>
       </div>
 
-      <div className="content-center">
+      <div className="flex flex-col items-end gap-1 sm:items-center sm:justify-center">
         <div className="flex items-center justify-end gap-2 sm:justify-center ">
           <CalendarDateRangeIcon className="size-4" />
           <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{formatDate(fecha, '/').fechaEs}</p>
         </div>
+        <span className="w-fit sm:hidden items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-500 dark:bg-emerald-500/20">
+          Realizado
+        </span>
       </div>
 
-      <div className="absolute right-0 top-7 content-center sm:relative sm:right-auto sm:top-auto sm:mx-auto">
+      <div className="hidden sm:block content-center sm:relative sm:right-auto sm:top-auto sm:mx-auto">
         <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-500 dark:bg-emerald-500/20">
           Realizado
         </span>
