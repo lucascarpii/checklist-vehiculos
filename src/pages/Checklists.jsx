@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc } from "tamnora-react";
 import { ResumenChecklist } from "../components/ResumenChecklist";
+import { ChecklistItem } from "../components/ChecklistItem";
 
 
 export function Checklists() {
@@ -13,9 +14,23 @@ export function Checklists() {
   const [alertData, setAlertData] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [idSelected, setIdSelected] = useState(0);
+  const [users, setUsers] = useState({})
+  const [vehiculos, setVehiculos] = useState([]);
 
   const getData = async () => {
-    await runCodeStruc('-sl id, fecha, usuario_id, vehiculo_id, kilometraje -fr checklists', 'checklists').then(res => {
+    await runCode('-st usuarios').then(res => {
+      let obj = {}
+      res.forEach(user => {
+        obj[user.id] = user.nombre_usuario
+      })
+      setUsers(obj)
+    })
+
+    await runCode('-st vehiculos').then(res => {
+      setVehiculos(res)
+    })
+
+    await runCodeStruc('-sl id, fecha, usuario_id, vehiculo_id, kilometraje -fr checklists -ob id DESC', 'checklists').then(res => {
       setTableData(res.data)
       setDataStruc(res.struc.types)
     })
@@ -33,9 +48,9 @@ export function Checklists() {
     setIsModalOpen(false)
   }
 
-  const verChecklist = async (rowData) => {
+  const verChecklist = async (id) => {
     setFormData(null);
-    const res = await runCode(`-st checklists -wr id = ${rowData.id}`);
+    const res = await runCode(`-st checklists -wr id = ${id}`);
     setFormData(res[0]);
     setIdSelected(res[0].id)
     setIsModalOpen(true)
@@ -45,7 +60,7 @@ export function Checklists() {
     if (isModalOpen && formData) {
       return (
         <>
-         <section className="flex items-center justify-between gap-4 relative mb-6">
+          <section className="flex items-center justify-between gap-4 relative mb-6">
             <div className="flex items-start gap-2">
               <Button onClick={closeModal} className="hover:bg-zinc-100 hover:dark:bg-zinc-500/10 text-zinc-600 h-8 w-8 flex items-center justify-center rounded-full">
                 <ChevronLeftIcon className="size-6" />
@@ -73,19 +88,21 @@ export function Checklists() {
               </div>
             </div>
           </section>
-          <section>
-            <AutoTable showRowSelection={false} renderCell={(data) => {
-              if (data.column == 'tipo_usuario') {
-                if (data.value == 0) {
-                  return 'Empleado'
-                } else {
-                  return 'Administrador'
-                }
-              } else {
-                return data.value
-              }
-            }} columnNames={{ nombre_usuario: 'nombre', tipo_usuario: 'tipo' }} data={tableData} onRowClick={verChecklist} />
-          </section>
+          <ul className="divide-y dark:divide-zinc-800">
+            {tableData.map((data) => {
+              return (
+                <ChecklistItem
+                  key={data.id}
+                  id={data.id}
+                  fecha={data.fecha}
+                  usuario={users[data.usuario_id]}
+                  marca={data.marca}
+                  modelo={data.modelo}
+                  buttonOnClick={() => verChecklist(data.id)}
+                />
+              )
+            })}
+          </ul>
         </>
       )
     }
