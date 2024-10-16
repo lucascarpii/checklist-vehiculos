@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Alert, AutoTable, Button, dbSelect, runCode, runCodeStruc, Select } from "tamnora-react";
+import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc, Select } from "tamnora-react";
 
 export function Asignaciones() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState(null);
   const [empleadosList, setEmpleadosList] = useState([]);
   const [vehiculosList, setVehiculosList] = useState([]);
   const [empleadoSelected, setEmpleadoSelected] = useState(0);
@@ -52,6 +53,22 @@ export function Asignaciones() {
       return
     } else {
       try {
+        // Verificar si ya existe una asignación con los mismos datos
+        const existingAssignment = await runCode(`-st empleados_vehiculos -wr empleado_id = ${empleadoSelected} AND vehiculo_id = ${vehiculoSelected}`);
+
+        if (existingAssignment.length > 0) {
+          // Si ya existe una asignación, mostrar alerta
+          setShowAlert(true);
+          setAlertData({
+            icon: true,
+            type: 'danger',
+            title: 'Error',
+            message: `Ya existe una asignación igual.`,
+          });
+          return; // Detener la creación de la asignación
+        }
+
+        // Si no hay una asignación duplicada, crear la asignación
         const tipo = 'i';
         const sql = `INSERT INTO empleados_vehiculos (empleado_id, vehiculo_id) VALUES (${empleadoSelected}, ${vehiculoSelected})`;
 
@@ -78,6 +95,7 @@ export function Asignaciones() {
       }
     }
   }
+
   const renderCell = (data) => {
     if (data.column === 'empleado_id') {
       const empleado = empleadosList.find(e => e.value === data.value);
@@ -93,6 +111,74 @@ export function Asignaciones() {
     getData();
   }, [isModalOpen]);
 
+  const verAsignacion = async (rowData) => {
+    setFormData(null);
+    const res = await runCode(`-st empleados_vehiculos -wr id = ${rowData.id}`);
+    setFormData(res[0]);
+    setIdSelected(res[0].id)
+    setIsModalOpen(true)
+  }
+
+  function closeModal() {
+    setIsModalOpen(false)
+  }
+
+  async function updateData(e) {
+    try {
+      const tipo = e.query.tipo;
+      const sql = e.query.sql;
+      let habilitePass = true;
+
+      const existingAssignment = await runCode(`-st empleados_vehiculos -wr empleado_id = ${e.formData.empleado_id} AND vehiculo_id = ${e.formData.vehiculo_id}`);
+
+      if (existingAssignment.length > 0) {
+        if (existingAssignment[0].id != idSelected) {
+          closeModal()
+          setShowAlert(true);
+          setAlertData({
+            icon: true,
+            type: 'danger',
+            title: 'Error',
+            message: `Ya existe una asignación igual.`,
+          });
+          habilitePass = false;
+        }
+      }
+
+      if (habilitePass) {
+        await dbSelect(tipo, sql).then((res) => {
+          if (res[0].resp == '1') {
+            closeModal();
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'success',
+              title: 'Proceso Finalizado',
+              message: 'Se guardó correctamente',
+            });
+          } else {
+            closeModal();
+            setShowAlert(true);
+            setAlertData({
+              icon: true,
+              type: 'danger',
+              title: 'Proceso Interrumpido',
+              message: 'Parece que hubo un error al actualizar',
+            });
+          }
+        });
+      }
+    } catch (error) {
+      closeModal()
+      setShowAlert(true);
+      setAlertData({
+        icon: true,
+        type: 'danger',
+        title: 'Error',
+        message: error.message,
+      });
+    }
+  }
   return (
     <>
       {showAlert && (
@@ -128,8 +214,46 @@ export function Asignaciones() {
             Crear asignación
           </Button>
         </div>
-        <AutoTable showRowSelection={false} data={tableData} struc={dataStruc} renderCell={renderCell} columnNames={{ empleado_id: 'Empleado', vehiculo_id: 'Vehículo' }} />
+        <AutoTable
+          showRowSelection={false}
+          data={tableData}
+          struc={dataStruc}
+          renderCell={renderCell}
+          columnNames={{ empleado_id: 'Empleado', vehiculo_id: 'Vehículo' }}
+          onRowClick={verAsignacion}
+        />
       </section>
+
+      {
+        formData &&
+        <Modal
+          title="Editar asignación"
+          isOpen={isModalOpen}
+          handleModal={closeModal}
+          size="3xl"
+        >
+          <AutoForm
+            data={formData}
+            onSubmit={updateData}
+            primaryKey="id"
+            idSelected={idSelected}
+            struc={dataStruc}
+            textSubmit="Actualizar"
+            table="empleados_vehiculos"
+            isHidden={['id']}
+            isRequired={['empleado_id', 'vehiculo_id']}
+            colsWidth={{
+              empleado_id: 'col-span-12 sm:col-span-6',
+              vehiculo_id: 'col-span-12 sm:col-span-6',
+            }}
+            names={{
+              empleado_id: 'Empleado',
+              vehiculo_id: 'Vehículo',
+            }}
+            types={{ empleado_id: { type: 'select', options: empleadosList }, vehiculo_id: { type: 'select', options: vehiculosList } }}
+          />
+        </Modal>
+      }
     </>
   )
 }
