@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, AutoForm, AutoTable, Button, dbSelect, Modal, runCode, runCodeStruc } from "tamnora-react";
 
-
 export function Vehiculos() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState(null);

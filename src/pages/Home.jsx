@@ -20,8 +20,8 @@ import {
   tableroTapizadosOptions,
   direccionOptions
 } from "../utils/valores"
+import { ResumenChecklist } from "../components/ResumenChecklist";
 
-// Define los datos base del formulario como un objeto independiente
 const initialFormData = {
   datosGenerales: {
     kilometraje: '',
@@ -79,10 +79,12 @@ export function Home() {
   const [historial, setHistorial] = useState([]);
   const [subtitle, setSubtitle] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModal2Open, setIsModal2Open] = useState(false);
   const [vehiculoSelected, setVehiculoSelected] = useState('');
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
   const [users, setUsers] = useState({})
+  const [checklistData, setChecklistData] = useState(null);
   const [formData, setFormData] = useState(initialFormData); // Inicializa formData
 
   const { logout, user } = useAuth();
@@ -250,6 +252,7 @@ export function Home() {
     setFormData(initialFormData); // Resetea formData al inicial
     setStep(1);
     setIsModalOpen(false);
+    setIsModal2Open(false);
   }
 
   // Define una función para renderizar el formulario de cada paso
@@ -590,6 +593,14 @@ export function Home() {
     setError('')
   };
 
+
+  const verChecklist = async (checklist) => {
+    setChecklistData(null);
+    const res = await runCode(`-st checklists -wr id = ${checklist.id}`);
+    setChecklistData(res[0]);
+    setIsModal2Open(true)
+  };
+
   return (
     <>
       <section className="flex justify-between">
@@ -616,7 +627,7 @@ export function Home() {
         {vehiculos.length > 0 ?
           <>
             <div>
-              <h2 className="text-md mb-3">{vehiculos.length > 1 ? 'Vehículos asignados' : 'Vehículo asignado'}</h2>
+              <h2 className="text-md mb-2 font-medium text-zinc-400 dark:text-zinc-500">{vehiculos.length > 1 ? 'Vehículos asignados' : 'Vehículo asignado'}</h2>
               <div className="grid grid-cols-[repeat(auto-fill,_minmax(18rem,_1fr))] gap-y-2 sm:gap-y-3 md:gap-y-5 gap-x-3">
                 {vehiculos.map((vehiculo) => {
 
@@ -633,10 +644,7 @@ export function Home() {
                         modelo={vehiculo.modelo}
                         realizado={true}
                         patente={vehiculo.patente}
-                        handleClick={() => {
-                          setVehiculoSelected(vehiculo)
-                          setIsModalOpen(true)
-                        }}
+                        handleClick={() => { verChecklist(ultimoChecklist) }}
                       />
                     )
                   } else {
@@ -664,7 +672,7 @@ export function Home() {
                 <ul className="grid dark:divide-zinc-800">
                   {historial.map((item) => {
                     return (
-                      <li key={item.id} className="flex rounded-lg justify-between items-center py-3 px-4 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all duration-200">
+                      <li key={item.id} onClick={() => verChecklist(item)} className="flex cursor-pointer rounded-lg justify-between items-center py-3 px-4 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all duration-200">
                         <div className="flex flex-col">
                           <h3 className="text-md font-medium">{item.marca} {item.modelo}</h3>
                           <p className="text-sm text-zinc-400">{users[item.usuario_id]}</p>
@@ -734,6 +742,17 @@ export function Home() {
           }
         </footer>
       </Modal>
+      {checklistData &&
+        <Modal
+          title={`Checklist N° ${checklistData.id}`}
+          subtitle={`Último kilometraje: ${checklistData.kilometraje}`}
+          isOpen={isModal2Open}
+          handleModal={closeModal} size="3xl"
+          overflow="md:max-h-[600px] overflow-y-auto"
+        >
+          <ResumenChecklist formData={checklistData} />
+        </Modal>
+      }
     </>
   )
 }
