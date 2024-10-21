@@ -31,7 +31,7 @@ export function Vehiculos() {
       const sql = e.query.sql;
       let habilitePass = true;
       await runCode(`-sl id, patente -fr vehiculos -wr patente = '${e.formData.patente}'`).then(res => {
-        if (res.length > 0) {
+        if (res.length > 0 && res[0].id !== idSelected) {
           closeModal()
           setShowAlert(true);
           setAlertData({
@@ -42,7 +42,6 @@ export function Vehiculos() {
           });
           habilitePass = false;
         }
-
       })
       if (habilitePass) {
         await dbSelect(tipo, sql).then((res) => {

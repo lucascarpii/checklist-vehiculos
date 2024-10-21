@@ -31,7 +31,14 @@ export function ResumenChecklist({ formData = {} }) {
           <li>Trasera Derecha - {getLabelByValue(estadoCubiertasOptions, formData.estado_cubierta_trasera_derecha)}</li>
           <li>Rueda de auxilio - {getLabelByValue(estadoCubiertasOptions, formData.estado_cubierta_auxilio)}</li>
         </ul>
-        <p className="pt-2">Observaciones: {formData.observacion_cubiertas}</p>
+        {formData.observacion_cubiertas && <p className="pt-2">
+          Observaciones:
+          <span className="text-zinc-500 dark:text-zinc-300 font-medium italic px-2">
+            "
+            {formData.observacion_cubiertas}
+            "
+          </span>
+        </p>}
       </div>
 
       {/* Verificación de Fluidos */}
@@ -42,7 +49,14 @@ export function ResumenChecklist({ formData = {} }) {
           <li>Aceite - {getLabelByValue(nivelesOptions, formData.nivel_aceite)}</li>
           <li>Líquido de frenos - {getLabelByValue(nivelesOptions, formData.nivel_frenos)}</li>
         </ul>
-        <p className="pt-2">Observaciones: {formData.observacion_niveles}</p>
+        {formData.observacion_niveles && <p className="pt-2">
+          Observaciones:
+          <span className="text-zinc-500 dark:text-zinc-300 font-medium italic px-2">
+            "
+            {formData.observacion_niveles}
+            "
+          </span>
+        </p>}
       </div>
 
       {/* Vidrios y Parabrisas */}
@@ -53,7 +67,14 @@ export function ResumenChecklist({ formData = {} }) {
           <li>Parabrisas - {getLabelByValue(parabrisasOptions, formData.estado_parabrisas)}</li>
           <li>Espejos Laterales - {getLabelByValue(espejosVentanasOptions, formData.estado_espejos_laterales)}</li>
         </ul>
-        <p className="pt-2">Observaciones: {formData.observacion_vidrios}</p>
+        {formData.observacion_vidrios && <p className="pt-2">
+          Observaciones:
+          <span className="text-zinc-500 dark:text-zinc-300 font-medium italic px-2">
+            "
+            {formData.observacion_vidrios}
+            "
+          </span>
+        </p>}
       </div>
 
       {/* Extintor */}
@@ -64,7 +85,14 @@ export function ResumenChecklist({ formData = {} }) {
           <li>Precinto - {getLabelByValue(extintorPrecintoOptions, formData.extintor_precinto)}</li>
           <li>Fecha de Vencimiento - {getLabelByValue(extintorFechaVencimientoOptions, formData.extintor_fecha_vencimiento)}</li>
         </ul>
-        <p className="pt-2">Observaciones: {formData.observacion_extintor}</p>
+        {formData.observacion_extintor && <p className="pt-2">
+          Observaciones:
+          <span className="text-zinc-500 dark:text-zinc-300 font-medium italic px-2">
+            "
+            {formData.observacion_extintor}
+            "
+          </span>
+        </p>}
       </div>
 
       {/* Documentos Legales */}
@@ -77,7 +105,14 @@ export function ResumenChecklist({ formData = {} }) {
           <li>Póliza de Seguro - {getLabelByValue(documentosOptions, formData.poliza)}</li>
           <li>Manejo defensivo - {getLabelByValue(documentosOptions, formData.manejo_defensivo)}</li>
         </ul>
-        <p className="pt-2">Observaciones: {formData.observacion_documentos}</p>
+        {formData.observacion_documentos && <p className="pt-2">
+          Observaciones:
+          <span className="text-zinc-500 dark:text-zinc-300 font-medium italic px-2">
+            "
+            {formData.observacion_documentos}
+            "
+          </span>
+        </p>}
       </div>
 
       {/* Frenos. Dirección */}
@@ -88,7 +123,14 @@ export function ResumenChecklist({ formData = {} }) {
           <li>Dirección - {getLabelByValue(direccionOptions, formData.estado_direccion)}</li>
           <li>Amortiguadores - {getLabelByValue(amortiguadoresFrenosOptions, formData.estado_amortiguadores)}</li>
         </ul>
-        <p className="pt-2">Observaciones: {formData.observacion_frenos_direccion}</p>
+        {formData.observacion_frenos_direccion && <p className="pt-2">
+          Observaciones:
+          <span className="text-zinc-500 dark:text-zinc-300 font-medium italic px-2">
+            "
+            {formData.observacion_frenos_direccion}
+            "
+          </span>
+        </p>}
       </div>
 
       {/* Limpieza del Habitáculo */}
@@ -99,7 +141,14 @@ export function ResumenChecklist({ formData = {} }) {
           <li>Estado General - {getLabelByValue(estadoGeneralOptions, formData.estado_general_limpieza)}</li>
           <li>Tablero de Instrumentos - {getLabelByValue(tableroTapizadosOptions, formData.estado_tablero)}</li>
         </ul>
-        <p className="pt-2">Observaciones: {formData.observacion_limpieza}</p>
+        {formData.observacion_limpieza && <p className="pt-2">
+          Observaciones:
+          <span className="text-zinc-500 dark:text-zinc-300 font-medium italic px-2">
+            "
+            {formData.observacion_limpieza}
+            "
+          </span>
+        </p>}
       </div>
     </div>
   );
@@ -107,5 +156,6 @@ export function ResumenChecklist({ formData = {} }) {
 
 function getLabelByValue(options, value) {
   const option = options.find(option => option.value === value);
-  return option ? <span className={`rounded-full font-medium px-2 text-xs py-[1px] ${option.color}`}>{option.label}</span> : 'N/A';
+  return option ? <span className={`rounded-full font-medium px-2 text-xs py-[1px] ${option.color}`}>{option.label}
+  </span> : 'N/A';
 }
