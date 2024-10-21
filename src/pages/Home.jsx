@@ -140,7 +140,8 @@ export function Home() {
     getData();
   }, [isModalOpen]);
 
-  function isSameWeek(dateToCompare) {
+  function isSameWeek(dateMant) {
+    const dateToCompare = new Date(dateMant + ' 00:00:00');
     const today = new Date();
     const currentWeek = getWeek(today);
     const compareWeek = getWeek(dateToCompare);
@@ -633,8 +634,8 @@ export function Home() {
 
                   let ultimoChecklist = historial.find(checklist => checklist.vehiculo_id === vehiculo.id)
 
-                  const dateToCompare = new Date(ultimoChecklist?.fecha);
-                  const isSameWeekResult = isSameWeek(dateToCompare);
+                  
+                  const isSameWeekResult = isSameWeek(ultimoChecklist?.fecha);
 
                   if (isSameWeekResult) {
                     return (
