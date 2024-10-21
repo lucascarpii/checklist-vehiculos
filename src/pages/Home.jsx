@@ -666,18 +666,20 @@ export function Home() {
               </div>
             </div>
 
-            <div className="rounded-xl border-2 bg-zinc-100 dark:border-zinc-700 pt-4 pb-2 px-2 dark:bg-zinc-800">
+            <div className="rounded-xlpt-4 pb-2 px-2">
               <h2 className="text-md font-medium text-zinc-400 mb-3 px-2">Checklists del mes</h2>
               {historial.length > 0 ?
                 <ul className="grid dark:divide-zinc-800">
                   {historial.map((item) => {
                     return (
-                      <li key={item.id} onClick={() => verChecklist(item)} className="flex cursor-pointer rounded-lg justify-between items-center py-3 px-4 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all duration-200">
-                        <div className="flex flex-col">
+                      <li key={item.id} onClick={() => verChecklist(item)}
+                        className="flex cursor-pointer rounded-lg justify-between items-center py-3 px-4 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-200">
+                       <div className="flex flex-col">
                           <h3 className="text-md font-medium">{item.marca} {item.modelo}</h3>
                           <p className="text-sm text-zinc-400">{users[item.usuario_id]}</p>
                         </div>
                         <div className="flex-col text-right">
+                          <span className="text-sm text-zinc-400">N° {item?.id}</span>
                           <p className="text-sm text-zinc-400">{item?.fecha}</p>
                         </div>
                       </li>
