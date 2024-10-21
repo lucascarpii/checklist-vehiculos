@@ -547,7 +547,7 @@ export function Home() {
 
     if (step === 9) {
       return (
-        <div className="max-h-dvh sm:max-h-80 overflow-y-auto grid">
+        <div className="sm:max-h-dvh md:max-h-80 overflow-y-auto grid">
           <ResumenChecklistModal formData={formData} />
         </div>
       );
